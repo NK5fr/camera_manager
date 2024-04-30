@@ -14,11 +14,8 @@ MainWindow::MainWindow(QWidget *parent)
     cam = camList.GetByIndex(0);
     cam->Init();
 
-    INodeMap& nodeMap = cam->GetNodeMap();
-    CBooleanPtr fpsEnable = nodeMap.GetNode("AcquisitionFrameRateEnable");
-    CFloatPtr fps = nodeMap.GetNode("AcquisitionFrameRate");
-    fpsEnable->SetValue(true);
-    fps->SetValue(30.0);
+    cam->AcquisitionFrameRateEnable.SetValue(true);
+    cam->AcquisitionFrameRate.SetValue(15.0);
 
     cam->BeginAcquisition();
     QTimer *timer = new QTimer(this);
@@ -28,6 +25,11 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    image->Release();
+    camList.Clear();
+    cam->EndAcquisition();
+    cam->DeInit();
+    system->ReleaseInstance();
     delete ui;
 }
 
