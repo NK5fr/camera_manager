@@ -11,32 +11,23 @@ MainWindow::MainWindow(QWidget *parent)
 
     system = System::GetInstance();
     camList = system->GetCameras();
-    cam = camList.GetByIndex(0);
-    cam->Init();
-
-    cam->AcquisitionFrameRateEnable.SetValue(true);
-    cam->AcquisitionFrameRate.SetValue(15.0);
-
-    cam->BeginAcquisition();
-    QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(getCameraImage()));
-    timer->start(30);
+    cam = new FlirCamera(camList.GetByIndex(0));
+    connect(cam, &FlirCamera::imageArrived, this, &MainWindow::getCameraImage);
+    cam->startAquisition();
 }
 
 MainWindow::~MainWindow()
 {
-    image->Release();
     camList.Clear();
-    cam->EndAcquisition();
-    cam->DeInit();
+    delete cam;
     system->ReleaseInstance();
     delete ui;
 }
 
-void MainWindow::getCameraImage()
+void MainWindow::getCameraImage(ImagePtr convertedImage, int count)
 {
-    image = cam->GetNextImage(1000);
-    ImagePtr convertedImage = processor.Convert(image, PixelFormat_BGR8);
-    QImage image((uchar*) convertedImage->GetData(), convertedImage->GetWidth(), convertedImage->GetHeight(), convertedImage->GetStride(), QImage::Format_BGR888);
-    ui->cameraRendering->setPixmap(QPixmap::fromImage(image.scaled(ui->cameraRendering->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation)));
+    cout << convertedImage->GetWidth() << " " << convertedImage->GetHeight() << endl;
+    // QImage image((uchar*) convertedImage->GetData(), convertedImage->GetWidth(), convertedImage->GetHeight(), convertedImage->GetStride(), QImage::Format_BGR888);
+    // delete convertedImage;
+    // ui->cameraRendering->setPixmap(QPixmap::fromImage(image.scaled(ui->cameraRendering->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation)));
 }

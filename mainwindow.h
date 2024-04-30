@@ -9,6 +9,8 @@
 #include <iostream>
 #include <sstream>
 
+#include "flir_camera.h"
+
 using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
@@ -32,11 +34,9 @@ private:
     Ui::MainWindow *ui;
     SystemPtr system;
     CameraList camList;
-    CameraPtr cam;
-    ImageProcessor processor;
-    ImagePtr image;
+    FlirCamera *cam;
 
 private slots:
-    void getCameraImage();
+    void getCameraImage(ImagePtr image, int count);
 };
 #endif // MAINWINDOW_H
