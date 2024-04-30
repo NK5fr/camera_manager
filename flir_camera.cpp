@@ -4,16 +4,21 @@ FlirCamera::FlirCamera(CameraPtr cam)
 {
     this->cam = cam;
     cam->Init();
-    cam->RegisterEventHandler(dynamic_cast<ImageEventHandler&>(*this));
+
+    cam->AcquisitionFrameRateEnable.SetValue(true);
+    cam->AcquisitionFrameRate.SetValue(15.0);
 }
 
 FlirCamera::~FlirCamera(){
+    image->Release();
     cam->EndAcquisition();
     cam->DeInit();
 }
 
-void FlirCamera::OnImageEvent(ImagePtr image){
-    ImagePtr convertedImage = processor.Convert(image, PixelFormat_BGR8);
-    ++imageCount;
-    emit imageArrived(convertedImage, imageCount);
+ImagePtr FlirCamera::getNextImageConverted()
+{
+    image = cam->GetNextImage(1000);
+    return processor.Convert(image, PixelFormat_BGR8);
 }
+
+

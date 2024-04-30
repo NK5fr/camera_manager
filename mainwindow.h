@@ -37,6 +37,6 @@ private:
     FlirCamera *cam;
 
 private slots:
-    void getCameraImage(ImagePtr image, int count);
+    void getCameraImage();
 };
 #endif // MAINWINDOW_H

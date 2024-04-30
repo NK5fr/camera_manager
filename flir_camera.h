@@ -15,23 +15,18 @@ using namespace Spinnaker::GenICam;
 using namespace std;
 
 
-class FlirCamera : public QObject, public ImageEventHandler
+class FlirCamera
 {
-    Q_OBJECT
+
 public:
     FlirCamera(CameraPtr);
     ~FlirCamera();
-
-    void OnImageEvent(Spinnaker::ImagePtr image);
-    int getImageCount() const { return this->imageCount; }
     void startAquisition() {cam->BeginAcquisition();}
-
-signals:
-    void imageArrived(ImagePtr, int const);
+    ImagePtr getNextImageConverted();
 
 private:
-    int imageCount = 0;
     CameraPtr cam = nullptr;
+    ImagePtr image;
     ImageProcessor processor;
 };
 
