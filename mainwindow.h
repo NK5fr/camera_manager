@@ -4,12 +4,13 @@
 #include <QMainWindow>
 #include <QTimer>
 
-#include "Spinnaker.h"
 #include "SpinGenApi/SpinnakerGenApi.h"
+#include "Spinnaker.h"
 #include <iostream>
 #include <sstream>
 
 #include "flir_camera.h"
+#include "settings_page.h"
 
 using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
@@ -29,14 +30,15 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
 private:
     Ui::MainWindow *ui;
     SystemPtr system;
     CameraList camList;
     FlirCamera *cam;
+    SettingsPage *page;
 
 private slots:
+    void showSettings();
     void getCameraImage();
 };
 #endif // MAINWINDOW_H

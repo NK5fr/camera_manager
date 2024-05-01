@@ -25,6 +25,12 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
         flir_camera.h
         flir_camera.cpp
+        settings_page.h settings_page.cpp
+        utils.h utils.cpp
+        linkedcombobox.h linkedcombobox.cpp
+        ilinked.h
+        linkedlineedit.h linkedlineedit.cpp
+        linkedslider.h linkedslider.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET camera_manager APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
