@@ -6,7 +6,7 @@ FlirCamera::FlirCamera(CameraPtr cam)
     cam->Init();
 
     cam->AcquisitionFrameRateEnable.SetValue(true);
-    cam->AcquisitionFrameRate.SetValue(15.0);
+    cam->AcquisitionFrameRate.SetValue(20.0);
 }
 
 FlirCamera::~FlirCamera(){
