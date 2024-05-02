@@ -4,22 +4,14 @@ FlirCamera::FlirCamera(CameraPtr cam)
 {
     this->cam = cam;
     cam->Init();
-
+    cam->RegisterEventHandler(*this);
     cam->AcquisitionFrameRateEnable.SetValue(true);
-    cam->AcquisitionFrameRate.SetValue(15.0);
+    cam->AcquisitionFrameRate.SetValue(60.0);
 }
 
 FlirCamera::~FlirCamera()
 {
-    image->Release();
-    stopAquisition();
     cam->DeInit();
-}
-
-ImagePtr FlirCamera::getNextImageConverted()
-{
-    image = cam->GetNextImage(1000);
-    return processor.Convert(image, PixelFormat_BGR8);
 }
 
 void FlirCamera::setExposureTime(int exposure) {
@@ -41,6 +33,13 @@ void FlirCamera::setExposureMode(bool mode)
     } catch(Spinnaker::Exception exception) {
         qInfo() << exception.what();
     }
+}
+
+void FlirCamera::OnImageEvent(ImagePtr image)
+{
+    ImagePtr converted_image = processor.Convert(image, PixelFormat_BGR8);
+    count++;
+    emit imageRetrieved(converted_image, count);
 }
 
 int FlirCamera::getExposureTime() {

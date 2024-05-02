@@ -39,6 +39,6 @@ private:
 
 private slots:
     void showSettings();
-    void getCameraImage();
+    void getCameraImage(ImagePtr, int);
 };
 #endif // MAINWINDOW_H

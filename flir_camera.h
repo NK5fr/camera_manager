@@ -14,7 +14,7 @@ using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
 using namespace std;
 
-class FlirCamera : public QObject
+class FlirCamera : public QObject, public ImageEventHandler
 {
     Q_OBJECT
 public:
@@ -22,18 +22,19 @@ public:
     ~FlirCamera();
     void startAquisition() { cam->BeginAcquisition(); }
     void stopAquisition() { cam->EndAcquisition(); }
-    ImagePtr getNextImageConverted();
     int getExposureTime();
     bool getExposureAuto();
     void setExposureMode(bool mode);
+    void OnImageEvent(ImagePtr);
 public slots:
     void setExposureTime(int exposure);
 signals:
     void exposureTimeChanged(int);
+    void imageRetrieved(ImagePtr, int);
 private:
     CameraPtr cam = nullptr;
-    ImagePtr image;
     ImageProcessor processor;
+    int count = 0;
 };
 
 #endif // FLIR_CAMERA_H

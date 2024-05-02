@@ -17,16 +17,14 @@ MainWindow::MainWindow(QWidget *parent)
     cam = new FlirCamera(camList.GetByIndex(0));
     cam->startAquisition();
     this->page = new SettingsPage(cam, nullptr);
-
-    QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(getCameraImage()));
-    timer->start(30);
+    connect(cam, SIGNAL(imageRetrieved(ImagePtr, int)), this, SLOT(getCameraImage(ImagePtr, int)));
     connect(ui->settingsButton, SIGNAL(released()), this, SLOT(showSettings()));
 }
 
 MainWindow::~MainWindow()
 {
     camList.Clear();
+    cam->stopAquisition();
     delete cam;
     system->ReleaseInstance();
     delete ui;
@@ -42,9 +40,9 @@ void MainWindow::showSettings() {
     }
 }
 
-void MainWindow::getCameraImage()
+void MainWindow::getCameraImage(ImagePtr convertedImage, int count)
 {
-    ImagePtr convertedImage = cam->getNextImageConverted();
+    cout << count/60 << endl;
     QImage image((uchar *) convertedImage->GetData(),
                  convertedImage->GetWidth(),
                  convertedImage->GetHeight(),
