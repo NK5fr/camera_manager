@@ -42,7 +42,7 @@ void MainWindow::showSettings() {
 
 void MainWindow::getCameraImage(ImagePtr convertedImage, int count)
 {
-    cout << count/60 << endl;
+    cout << count << endl;
     QImage image((uchar *) convertedImage->GetData(),
                  convertedImage->GetWidth(),
                  convertedImage->GetHeight(),
