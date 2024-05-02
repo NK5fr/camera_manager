@@ -10,9 +10,9 @@ class SettingsPage : public QWidget
     Q_OBJECT
 public:
     explicit SettingsPage(FlirCamera *camera, QWidget *parent);
-    void initExposureSlider();
 private:
     FlirCamera* cam;
+    void initExposureSlider();
     int defaultExpoMax = 20000;
     int defaultExpoMin = 6;
 signals:

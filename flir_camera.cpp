@@ -6,7 +6,7 @@ FlirCamera::FlirCamera(CameraPtr cam)
     cam->Init();
     cam->RegisterEventHandler(*this);
     cam->AcquisitionFrameRateEnable.SetValue(true);
-    cam->AcquisitionFrameRate.SetValue(60.0);
+    cam->AcquisitionFrameRate.SetValue(30.0);
     setExposureAuto(false);
 }
 
@@ -51,4 +51,33 @@ int FlirCamera::getExposureTime() {
 bool FlirCamera::isExposureAuto() {
     Spinnaker::ExposureAutoEnums value = cam->ExposureAuto.GetValue();
     return value != Spinnaker::ExposureAuto_Off;
+}
+
+std::string FlirCamera::getModelName() {
+    CStringPtr ptrDeviceVendorName = getINodeMap().GetNode("DeviceModelName");
+    return ptrDeviceVendorName->ToString().c_str();
+}
+
+std::string FlirCamera::getVendorName() {
+    CStringPtr ptrDeviceVendorName = getINodeMap().GetNode("DeviceVendorName");
+    return ptrDeviceVendorName->ToString().c_str();
+}
+
+CameraPtr FlirCamera::getCamera()
+{
+    return this->cam;
+}
+
+void FlirCamera::setCamera(CameraPtr newCam)
+{
+    this->cam = newCam;
+}
+
+bool FlirCamera::isSteaming()
+{
+    return this->cam->IsStreaming();
+}
+
+INodeMap &FlirCamera::getINodeMap() {
+    return cam->GetTLDeviceNodeMap();
 }

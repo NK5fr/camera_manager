@@ -64,8 +64,10 @@ SettingsPage::SettingsPage(FlirCamera *camera, QWidget *parent)
     std::vector<QWidget*> inputs = {deviceInput, maxExposureInput, autoExposureInput, exposureInput, triggerInput};
     std::vector<QLabel*> values = {deviceValue, maxExposureValue, autoExposureValue, exposureValue, triggerValue};
     for (int i = 0 ; i < labels.size() ; i++) {
-        layout->addRow(labels[i], inputs[i]);
-        layout->addRow(values[i]);
+        QHBoxLayout *hBoxLayout = new QHBoxLayout(this);
+        hBoxLayout->addWidget(inputs[i]);
+        hBoxLayout->addWidget(values[i]);
+        layout->addRow(labels[i], hBoxLayout);
     }
     LinkedLineEdit *linkedMaxExposure = new LinkedLineEdit(nullptr, maxExposureValue, maxExposureInput); linkedMaxExposure->setParent(this);
     LinkedLineEdit *linkedDevice = new LinkedLineEdit(nullptr, deviceValue, deviceInput); linkedDevice->setParent(this);

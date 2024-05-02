@@ -10,7 +10,7 @@
 #include <sstream>
 
 #include "flir_camera.h"
-#include "settings_page.h"
+#include "settingswidget.h"
 
 using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
@@ -35,11 +35,14 @@ private:
     SystemPtr system;
     CameraList camList;
     FlirCamera *cam;
-    SettingsPage *page;
+    SettingsWidget *page;
     void getCamera();
     void changeCameraInfo();
 private slots:
     void showSettings();
     void getCameraImage(ImagePtr, int);
+    void startAcquisition();
+    void stopAcquisition();
+    void changeAcquisition(bool streaming);
 };
 #endif // MAINWINDOW_H
