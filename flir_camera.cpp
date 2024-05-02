@@ -7,6 +7,7 @@ FlirCamera::FlirCamera(CameraPtr cam)
     cam->RegisterEventHandler(*this);
     cam->AcquisitionFrameRateEnable.SetValue(true);
     cam->AcquisitionFrameRate.SetValue(60.0);
+    setExposureAuto(false);
 }
 
 FlirCamera::~FlirCamera()
@@ -17,11 +18,12 @@ FlirCamera::~FlirCamera()
 void FlirCamera::setExposureTime(int exposure) {
     try {
         this->cam->ExposureTime.SetValue(exposure);
+        emit exposureTimeChanged(exposure);
     } catch(Spinnaker::Exception exception) {
         qInfo() << exception.what();
     }
 }
-void FlirCamera::setExposureMode(bool mode)
+void FlirCamera::setExposureAuto(bool mode)
 {
     try {
         if (mode) {
@@ -46,7 +48,7 @@ int FlirCamera::getExposureTime() {
     return this->cam->ExposureTime.GetValue();
 }
 
-bool FlirCamera::getExposureAuto() {
+bool FlirCamera::isExposureAuto() {
     Spinnaker::ExposureAutoEnums value = cam->ExposureAuto.GetValue();
-    return value == Spinnaker::ExposureAuto_Continuous;
+    return value != Spinnaker::ExposureAuto_Off;
 }

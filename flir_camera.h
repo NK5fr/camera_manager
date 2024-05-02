@@ -23,9 +23,9 @@ public:
     void startAquisition() { cam->BeginAcquisition(); }
     void stopAquisition() { cam->EndAcquisition(); }
     int getExposureTime();
-    bool getExposureAuto();
-    void setExposureMode(bool mode);
     void OnImageEvent(ImagePtr);
+    bool isExposureAuto();
+    void setExposureAuto(bool mode);
 public slots:
     void setExposureTime(int exposure);
 signals:
