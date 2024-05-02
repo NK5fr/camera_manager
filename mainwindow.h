@@ -36,7 +36,8 @@ private:
     CameraList camList;
     FlirCamera *cam;
     SettingsPage *page;
-
+    void getCamera();
+    void changeCameraInfo();
 private slots:
     void showSettings();
     void getCameraImage();

@@ -56,12 +56,9 @@ SettingsPage::SettingsPage(FlirCamera *camera, QWidget *parent)
 
     QSlider *exposureInput = new QSlider(this);
     exposureInput->setObjectName("exposureInput");
-    exposureInput->setOrientation(Qt::Horizontal);
-    exposureInput->setTickPosition(QSlider::TicksBelow);
 
     QComboBox *triggerInput = new QComboBox(this);
     triggerInput->setObjectName("triggerInput");
-
 
     std::vector<QLabel*> labels = {deviceLabel, maxExposureLabel, autoExposureLabel, exposureLabel, triggerLabel};
     std::vector<QWidget*> inputs = {deviceInput, maxExposureInput, autoExposureInput, exposureInput, triggerInput};
@@ -80,15 +77,9 @@ SettingsPage::SettingsPage(FlirCamera *camera, QWidget *parent)
     QObject::connect(cam, SIGNAL(exposureTimeChanged(int)), exposureInput, SLOT(setValue(int)));
     QObject::connect(autoExposureInput, SIGNAL(checkStateChanged(Qt::CheckState)), this, SLOT(setExposureMode(Qt::CheckState)));
 
-    autoExposureInput->setChecked(cam->getExposureTime());
-
+    autoExposureInput->setChecked(cam->isExposureAuto());
     maxExposureInput->setText(QString::number(defaultExpoMax));
-
-    exposureInput->setMaximum(defaultExpoMax);
-    if (!cam->getExposureAuto()) {
-        exposureInput->setValue(cam->getExposureTime());
-    }
-    exposureInput->setMinimum(defaultExpoMin);
+    initExposureSlider();
 }
 
 void SettingsPage::setMaxSliderWidth() {
@@ -98,8 +89,19 @@ void SettingsPage::setMaxSliderWidth() {
     slider->setMaximum(intValue);
 }
 
+void SettingsPage::initExposureSlider() {
+    qInfo() << cam->getExposureTime();
+    int defaultExposureValue = cam->getExposureTime();
+    QSlider *exposureInput = this->findChild<QSlider *>("exposureInput");
+    exposureInput->setMaximum(defaultExpoMax);
+    exposureInput->setMinimum(defaultExpoMin);
+    exposureInput->setOrientation(Qt::Horizontal);
+    cam->setExposureTime(defaultExposureValue);
+    qInfo() << cam->getExposureTime();
+}
+
 void SettingsPage::setExposureMode(Qt::CheckState state) {
     bool isAuto = (state == Qt::Checked);
     this->findChild<QSlider*>("exposureInput")->setEnabled(!isAuto);
-    cam->setExposureMode(isAuto);
+    cam->setExposureAuto(isAuto);
 }
