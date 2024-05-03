@@ -77,14 +77,20 @@ bool FlirCamera::isSteaming()
     return this->cam->IsStreaming();
 }
 
-void FlirCamera::setOpen(bool value)
+bool FlirCamera::isConnected()
 {
-    open = value;
-}
-
-bool FlirCamera::isOpen()
-{
-    return open;
+    try {
+        if(isSteaming()){
+            stopAquisition();
+            startAquisition();
+        }else{
+            startAquisition();
+            stopAquisition();
+        }
+        return true;
+    }catch(Exception e){
+        return false;
+    }
 }
 
 string FlirCamera::getSerial()

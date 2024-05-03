@@ -28,6 +28,9 @@ CameraWidget::CameraWidget(FlirCamera *flircam, QWidget *parent)
     connect(cam, SIGNAL(frameRate(int)), this, SLOT(updateFrameRate(int)));
 
     cam->startAquisition();
+
+    connect(refreshTimer, SIGNAL(timeout()), this, SLOT(testCameraStatus()));
+    refreshTimer->start(3000);
 }
 
 CameraWidget::~CameraWidget()
@@ -47,7 +50,9 @@ void CameraWidget::changeCameraInfo()
 
 
 void CameraWidget::showSettings() {
-    if (settings->isVisible()) {
+    if(!cam->isConnected()){
+        close();
+    }else if (settings->isVisible()) {
         settings->hide();
     } else {
         settings->show();
@@ -68,12 +73,21 @@ void CameraWidget::getCameraImage(ImagePtr convertedImage, int count)
 
 void CameraWidget::startAcquisition()
 {
-    cam->startAquisition();
+    if(!cam->isConnected()){
+        close();
+    }else{
+        cam->startAquisition();
+    }
 }
 
 void CameraWidget::stopAcquisition()
 {
-    cam->stopAquisition();
+    if(!cam->isConnected()){
+        close();
+    }else{
+        cam->stopAquisition();
+    }
+
 }
 
 void CameraWidget::changeAcquisition(bool mode)
@@ -83,7 +97,7 @@ void CameraWidget::changeAcquisition(bool mode)
 }
 
 void CameraWidget::stopExisting() {
-    cam->setOpen(false);
+    refreshTimer->stop();
     if (this->settings->isVisible()) {
         this->settings->hide();
     }
@@ -94,7 +108,9 @@ void CameraWidget::stopExisting() {
 
 void CameraWidget::showFrameRateController()
 {
-    if (this->controller->isVisible()) {
+    if(!cam->isConnected()){
+        close();
+    }else if (this->controller->isVisible()) {
         this->controller->hide();
     } else {
         this->controller->show();
@@ -102,9 +118,17 @@ void CameraWidget::showFrameRateController()
 }
 
 void CameraWidget::closeEvent(QCloseEvent *event) {
+    emit widgetClosed();
     this->stopExisting();
 }
 
 void CameraWidget::updateFrameRate(int frameRate) {
     ui->framerate->setText(QString::number(frameRate));
+}
+
+void CameraWidget::testCameraStatus()
+{
+    if(!cam->isConnected()){
+        close();
+    }
 }

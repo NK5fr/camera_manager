@@ -11,15 +11,20 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    string devicesNumber = "Devices found: " + std::to_string(camList.GetSize());
+    ui->devicesNumber->setText(QString::fromStdString(devicesNumber));
+
     for(int i = 0; i < camList.GetSize(); ++i){
         flirCamList.push_back(new FlirCamera(camList.GetByIndex(i)));
-        string serial = flirCamList[i]->getSerial();
-        QListWidgetItem *item = new QListWidgetItem(QString::fromStdString(serial));
-        item->setTextAlignment(Qt::AlignCenter);
-        item->setFont(QFont ("Courier", 14));
-        ui->cameraList->addItem(item);
     }
+    setListWidget();
+
     connect(ui->cameraList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(openCameraWidget(QListWidgetItem*)));
+    connect(ui->refresh, SIGNAL(clicked()), this, SLOT(refresh()));
+
+    connect(refreshTimer, SIGNAL(timeout()), this, SLOT(refresh()));
+    refreshTimer->start(3000);
 }
 
 MainWindow::~MainWindow()
@@ -32,21 +37,20 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-bool MainWindow::oneCameraOpen()
-{
-    for(FlirCamera* cam : flirCamList){
-        if(cam->isOpen()) return true;
-    }
-    return false;
-}
-
 void MainWindow::openCameraWidget(QListWidgetItem * item)
 {
     int idx = ui->cameraList->row(item);
-    if(!oneCameraOpen()){
-        flirCamList[idx]->setOpen(true);
+    cout << flirCamList[idx]->isConnected() << endl;
+    if(flirCamList[idx]->isConnected() && !open){
+        open = true;
         CameraWidget *currentWidget = new CameraWidget(flirCamList[idx], nullptr);
         currentWidget->show();
+        connect(currentWidget, SIGNAL(widgetClosed()), this, SLOT(cameraWidgetClosed()));
+    }else if(!flirCamList[idx]->isConnected()){
+        utils::showError("Camera not found");
+        refresh();
+    }else{
+        utils::showError("A camera is already opened");
     }
 }
 
@@ -54,3 +58,35 @@ void MainWindow::closeEvent(QCloseEvent *event) {
     QMainWindow::closeEvent(event);
     QApplication::closeAllWindows();
 }
+
+void MainWindow::setListWidget()
+{
+    ui->cameraList->clear();
+    for(FlirCamera *cam : flirCamList){
+        string serial = cam->getSerial();
+        QListWidgetItem *item = new QListWidgetItem(QString::fromStdString(serial));
+        item->setTextAlignment(Qt::AlignCenter);
+        item->setFont(QFont ("Courier", 14));
+        ui->cameraList->addItem(item);
+    }
+}
+
+void MainWindow::refresh()
+{
+    flirCamList.clear();
+    camList.Clear();
+    camList = system->GetCameras();
+    string devicesNumber = "Devices found: " + std::to_string(camList.GetSize());
+    ui->devicesNumber->setText(QString::fromStdString(devicesNumber));
+    for(int i = 0; i < camList.GetSize(); ++i){
+        flirCamList.push_back(new FlirCamera(camList.GetByIndex(i)));
+    }
+    setListWidget();
+}
+
+void MainWindow::cameraWidgetClosed()
+{
+    open = false;
+    refresh();
+}
+

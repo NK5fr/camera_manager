@@ -11,6 +11,7 @@
 #include "settingswidget.h"
 
 #include <QWidget>
+#include <QTimer>
 
 using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
@@ -36,6 +37,7 @@ private:
     SettingsWidget *settings;
     FrameRateController *controller;
     void changeCameraInfo();
+    QTimer *refreshTimer = new QTimer();
 private slots:
     void showSettings();
     void getCameraImage(ImagePtr, int);
@@ -45,6 +47,9 @@ private slots:
     void stopExisting();
     void showFrameRateController();
     void updateFrameRate(int frameRate);
+    void testCameraStatus();
+signals:
+    void widgetClosed();
 };
 
 #endif // CAMERAWIDGET_H
