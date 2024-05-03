@@ -39,8 +39,8 @@ void FlirCamera::setExposureAuto(bool mode)
 void FlirCamera::OnImageEvent(ImagePtr image)
 {
     ImagePtr converted_image = processor.Convert(image, PixelFormat_BGR8);
-    count++;
-    emit imageRetrieved(converted_image, count);
+    frameCount++;
+    emit imageRetrieved(converted_image, frameCount);
 }
 
 int FlirCamera::getExposureTime() {
@@ -80,3 +80,21 @@ bool FlirCamera::isSteaming()
 INodeMap &FlirCamera::getINodeMap() {
     return cam->GetTLDeviceNodeMap();
 }
+
+void FlirCamera::timerEvent(QTimerEvent *event) {
+    secondsCount++;
+    emit frameRate(this->getFrameRate());
+}
+
+void FlirCamera::resetTimer()
+{
+    this->frameCount = 0;
+    this->secondsCount = 0;
+    killTimer(timerId);
+    emit frameRate(0);
+}
+
+int FlirCamera::getFrameRate() {
+    return this->frameCount / this->secondsCount;
+}
+

@@ -33,6 +33,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         linkedslider.h linkedslider.cpp
         settingswidget.h settingswidget.cpp settingswidget.ui
         camerawidget.h camerawidget.cpp camerawidget.ui
+        frameratecontroller.h frameratecontroller.cpp frameratecontroller.ui
 
     )
 # Define target properties for Android with Qt 6 as:

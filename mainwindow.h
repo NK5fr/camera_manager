@@ -32,6 +32,7 @@ public:
     void initCameras();
     void addCameraWidget(int index);
     void reloadCameraList();
+    void closeEvent(QCloseEvent *event);
 private:
     Ui::MainWindow *ui;
 private slots:

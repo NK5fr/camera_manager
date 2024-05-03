@@ -7,6 +7,7 @@
 #include <sstream>
 
 #include "flir_camera.h"
+#include "frameratecontroller.h"
 #include "settingswidget.h"
 
 #include <QWidget>
@@ -33,6 +34,7 @@ private:
     Ui::CameraWidget *ui;
     FlirCamera *cam;
     SettingsWidget *settings;
+    FrameRateController *controller;
     void changeCameraInfo();
 private slots:
     void showSettings();
@@ -41,6 +43,8 @@ private slots:
     void stopAcquisition();
     void changeAcquisition(bool streaming);
     void stopExisting();
+    void showFrameRateController();
+    void updateFrameRate(int frameRate);
 };
 
 #endif // CAMERAWIDGET_H

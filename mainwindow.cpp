@@ -52,10 +52,16 @@ void MainWindow::showDefaultCam() {
         currentCamera = this->flirCamList[0];
     }
     CameraWidget *currentWidget = new CameraWidget(currentCamera, nullptr);
+    currentWidget->setWindowModality(Qt::WindowModal);
     currentWidget->show();
 }
 
 void MainWindow::reloadCameraList() {
     this->system = System::GetInstance();
     this->camList = system->GetCameras();
+}
+
+void MainWindow::closeEvent(QCloseEvent *event) {
+    QMainWindow::closeEvent(event);
+    QApplication::closeAllWindows();
 }

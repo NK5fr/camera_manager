@@ -20,18 +20,22 @@ class FlirCamera : public QObject, public ImageEventHandler
 public:
     FlirCamera(CameraPtr);
     ~FlirCamera();
-    void startAquisition() { cam->BeginAcquisition(); emit streaming(true); }
-    void stopAquisition() { cam->EndAcquisition(); emit streaming(false); }
+    void startAquisition() { cam->BeginAcquisition(); timerId = startTimer(1000); emit streaming(true); }
+    void stopAquisition() { cam->EndAcquisition(); resetTimer(); emit streaming(false); }
     void changeAcquisition(bool streaming) { (streaming) ? stopAquisition() : startAquisition();}
-    int getExposureTime();
     void OnImageEvent(ImagePtr);
-    bool isExposureAuto();
-    void setExposureAuto(bool mode);
+
     INodeMap &getINodeMap();
     std::string getModelName();
     std::string getVendorName();
     CameraPtr getCamera();
+    int getFrameRate();
+    int getExposureTime();
+
     void setCamera(CameraPtr newCam);
+    void setExposureAuto(bool mode);
+
+    bool isExposureAuto();
     bool isSteaming();
 public slots:
     void setExposureTime(int exposure);
@@ -39,10 +43,17 @@ signals:
     void exposureTimeChanged(int);
     void imageRetrieved(ImagePtr, int);
     void streaming(bool);
+    void frameRate(int);
 private:
     CameraPtr cam = nullptr;
     ImageProcessor processor;
-    int count = 0;
+    int frameCount = 0;
+    int secondsCount = 0;
+    int timerId;
+
+    void timerEvent(QTimerEvent *event);
+    void resetTimer();
+
 };
 
 #endif // FLIR_CAMERA_H

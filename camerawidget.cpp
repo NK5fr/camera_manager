@@ -3,6 +3,7 @@
 #include "utils.h"
 #include "qstyle.h"
 #include "qmessagebox.h"
+#include "frameratecontroller.h"
 
 CameraWidget::CameraWidget(FlirCamera *flircam, QWidget *parent)
     : QWidget(parent),
@@ -11,10 +12,10 @@ CameraWidget::CameraWidget(FlirCamera *flircam, QWidget *parent)
 
 {
     ui->setupUi(this);
-    QScreen *screen =  QGuiApplication::primaryScreen();
     setWindowTitle("Camera Manager");
     changeCameraInfo();
     this->settings = new SettingsWidget(cam, nullptr);
+    this->controller = new FrameRateController(nullptr);
 
     ui->framerateButton->setIcon(this->style()->standardIcon(QStyle::SP_FileDialogInfoView));
     connect(cam, SIGNAL(streaming(bool)), this, SLOT(changeAcquisition(bool)));
@@ -23,6 +24,9 @@ CameraWidget::CameraWidget(FlirCamera *flircam, QWidget *parent)
     connect(ui->startButton, SIGNAL(clicked(bool)), this, SLOT(startAcquisition()));
     connect(ui->stopButton, SIGNAL(clicked(bool)), this, SLOT(stopAcquisition()));
     ui->stopButton->setEnabled(false);
+
+    connect(ui->framerateButton, SIGNAL(clicked(bool)), this, SLOT(showFrameRateController()));
+    connect(cam, SIGNAL(frameRate(int)), this, SLOT(updateFrameRate(int)));
 }
 
 CameraWidget::~CameraWidget()
@@ -82,9 +86,23 @@ void CameraWidget::stopExisting() {
         this->settings->hide();
     }
     delete this->settings;
+    delete this->controller;
     delete this;
+}
+
+void CameraWidget::showFrameRateController()
+{
+    if (this->controller->isVisible()) {
+        this->controller->hide();
+    } else {
+        this->controller->show();
+    }
 }
 
 void CameraWidget::closeEvent(QCloseEvent *event) {
     this->stopExisting();
+}
+
+void CameraWidget::updateFrameRate(int frameRate) {
+    ui->framerate->setText(QString::number(frameRate));
 }
