@@ -4,8 +4,6 @@
 #include <QScreen>
 #include <qmessagebox.h>
 
-utils::utils() {}
-
 QRect utils::reCenter(QRect rect, QScreen *screen)
 {
     QRect newRect = QRect(0,0, rect.width(), rect.height());

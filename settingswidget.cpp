@@ -7,8 +7,8 @@
 
 SettingsWidget::SettingsWidget(FlirCamera *camera, QWidget *parent) :
     QWidget(parent),
-    cam(camera),
-    ui(new Ui::SettingsWidget)
+    ui(new Ui::SettingsWidget),
+    cam(camera)
 {
     ui->setupUi(this);
     this->setWindowTitle("Settings");
