@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->framerateButton->setIcon(this->style()->standardIcon(QStyle::SP_FileDialogInfoView));
     connect(cam, SIGNAL(streaming(bool)), this, SLOT(changeAcquisition(bool)));
-    connect(cam, SIGNAL(imageRetrieved(ImagePtr, int)), this, SLOT(getCameraImage(ImagePtr, int)));
+    connect(cam, SIGNAL(imageRetrieved(ImagePtr,int)), this, SLOT(getCameraImage(ImagePtr,int)));
     connect(ui->settingsButton, SIGNAL(released()), this, SLOT(showSettings()));
     connect(ui->startButton, SIGNAL(clicked(bool)), this, SLOT(startAcquisition()));
     connect(ui->stopButton, SIGNAL(clicked(bool)), this, SLOT(stopAcquisition()));
