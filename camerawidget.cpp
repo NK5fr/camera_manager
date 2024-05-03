@@ -23,10 +23,9 @@ CameraWidget::CameraWidget(FlirCamera *flircam, QWidget *parent)
     connect(ui->startButton, SIGNAL(clicked(bool)), this, SLOT(startAcquisition()));
     connect(ui->stopButton, SIGNAL(clicked(bool)), this, SLOT(stopAcquisition()));
     ui->stopButton->setEnabled(false);
-
-    connect(ui->framerateButton, SIGNAL(clicked(bool)), this, SLOT(showFrameRateController()));
     connect(cam, SIGNAL(frameRate(int)), this, SLOT(updateFrameRate(int)));
-
+    connect(ui->framerateButton, SIGNAL(clicked(bool)), this, SLOT(showFrameRateController()));
+    connect(controller, SIGNAL(fixedFrameRateChanged(int)), cam, SLOT(setFrameRate(int)));
     cam->startAquisition();
 }
 
@@ -103,6 +102,7 @@ void CameraWidget::showFrameRateController()
 
 void CameraWidget::closeEvent(QCloseEvent *event) {
     this->stopExisting();
+
 }
 
 void CameraWidget::updateFrameRate(int frameRate) {

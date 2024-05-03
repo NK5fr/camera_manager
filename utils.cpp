@@ -2,6 +2,8 @@
 
 #include <QRect>
 #include <QScreen>
+#include <qgridlayout.h>
+#include <qlabel.h>
 #include <qmessagebox.h>
 
 QRect utils::reCenter(QRect rect, QScreen *screen)
@@ -41,8 +43,6 @@ QRect utils::reCenterOffSet(QRect rect, QScreen *screen, char direction, int off
 
 int utils::showError(std::string text)
 {
-    QMessageBox warning;
-    warning.setText(QString::fromStdString(text));
-    warning.setDefaultButton(QMessageBox::Ok);
-    return warning.exec();
+    return QMessageBox(QMessageBox::NoIcon, "Error!", QString::fromStdString(text), QMessageBox::StandardButton::Ok).exec();
+
 }

@@ -31,6 +31,7 @@ public:
     CameraPtr getCamera();
     int getFrameRate();
     int getExposureTime();
+    int getGain();
 
     void setCamera(CameraPtr newCam);
     void setExposureAuto(bool mode);
@@ -42,8 +43,11 @@ public:
     string getSerial();
 public slots:
     void setExposureTime(int exposure);
+    void setGain(int gain);
+    void setFrameRate(int framerate);
 signals:
     void exposureTimeChanged(int);
+    void gainChanged(int);
     void imageRetrieved(ImagePtr, int);
     void streaming(bool);
     void frameRate(int);

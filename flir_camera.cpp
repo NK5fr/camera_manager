@@ -1,5 +1,6 @@
 #include "flir_camera.h"
 #include "QDebug"
+#include "utils.h"
 FlirCamera::FlirCamera(CameraPtr cam)
 {
     this->cam = cam;
@@ -19,8 +20,25 @@ void FlirCamera::setExposureTime(int exposure) {
         this->cam->ExposureTime.SetValue(exposure);
         emit exposureTimeChanged(exposure);
     } catch(Spinnaker::Exception exception) {
-        qInfo() << exception.what();
+        utils::showError(exception.what());
     }
+}
+
+void FlirCamera::setGain(int gain)
+{
+    try {
+        cam->Gain.SetValue(gain);
+        emit gainChanged(gain);
+    } catch(Spinnaker::Exception exception) {
+        utils::showError(exception.what());
+    }
+}
+
+void FlirCamera::setFrameRate(int framerate)
+{
+    this->resetTimer();
+    this->timerId = startTimer(1000);
+    cam->AcquisitionFrameRate.SetValue(framerate);
 }
 void FlirCamera::setExposureAuto(bool mode)
 {
@@ -45,6 +63,11 @@ void FlirCamera::OnImageEvent(ImagePtr image)
 
 int FlirCamera::getExposureTime() {
     return this->cam->ExposureTime.GetValue();
+}
+
+int FlirCamera::getGain()
+{
+    return cam->Gain.GetValue();
 }
 
 bool FlirCamera::isExposureAuto() {

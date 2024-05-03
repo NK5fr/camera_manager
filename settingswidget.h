@@ -19,6 +19,7 @@ public:
     void initExposureSlider();
     int defaultExpoMax = 20000;
     int defaultExpoMin = 6;
+    void initGainSlider();
 private:
     Ui::SettingsWidget *ui;
     FlirCamera* cam;
