@@ -34,8 +34,6 @@ private:
     std::vector<FlirCamera*> flirCamList;
     bool oneCameraOpen();
     void closeEvent(QCloseEvent *event);
-private:
-    Ui::MainWindow *ui;
 private slots:
     void openCameraWidget(QListWidgetItem*);
 };
