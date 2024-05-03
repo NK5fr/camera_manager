@@ -6,25 +6,28 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>200</width>
-    <height>200</height>
+    <width>721</width>
+    <height>541</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QListWidget" name="cameraList">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>60</y>
-      <width>80</width>
-      <height>29</height>
+      <x>200</x>
+      <y>90</y>
+      <width>311</width>
+      <height>291</height>
      </rect>
     </property>
-    <property name="text">
-     <string>bonjour</string>
+    <property name="layoutMode">
+     <enum>QListView::SinglePass</enum>
+    </property>
+    <property name="spacing">
+     <number>2</number>
     </property>
    </widget>
   </widget>
@@ -33,7 +36,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>200</width>
+     <width>721</width>
      <height>25</height>
     </rect>
    </property>

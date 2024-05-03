@@ -77,6 +77,22 @@ bool FlirCamera::isSteaming()
     return this->cam->IsStreaming();
 }
 
+void FlirCamera::setOpen(bool value)
+{
+    open = value;
+}
+
+bool FlirCamera::isOpen()
+{
+    return open;
+}
+
+string FlirCamera::getSerial()
+{
+    CStringPtr ptrStringSerial = cam->GetTLDeviceNodeMap().GetNode("DeviceSerialNumber");
+    return ptrStringSerial->GetValue().c_str();
+}
+
 INodeMap &FlirCamera::getINodeMap() {
     return cam->GetTLDeviceNodeMap();
 }

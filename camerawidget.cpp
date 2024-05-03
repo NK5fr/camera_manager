@@ -9,7 +9,6 @@ CameraWidget::CameraWidget(FlirCamera *flircam, QWidget *parent)
     : QWidget(parent),
     ui(new Ui::CameraWidget),
     cam(flircam)
-
 {
     ui->setupUi(this);
     setWindowTitle("Camera Manager");
@@ -27,6 +26,8 @@ CameraWidget::CameraWidget(FlirCamera *flircam, QWidget *parent)
 
     connect(ui->framerateButton, SIGNAL(clicked(bool)), this, SLOT(showFrameRateController()));
     connect(cam, SIGNAL(frameRate(int)), this, SLOT(updateFrameRate(int)));
+
+    cam->startAquisition();
 }
 
 CameraWidget::~CameraWidget()
@@ -82,6 +83,7 @@ void CameraWidget::changeAcquisition(bool mode)
 }
 
 void CameraWidget::stopExisting() {
+    cam->setOpen(false);
     if (this->settings->isVisible()) {
         this->settings->hide();
     }

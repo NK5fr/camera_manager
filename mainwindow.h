@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QTimer>
+#include <QListWidgetItem>
 
 #include "SpinGenApi/SpinnakerGenApi.h"
 #include "Spinnaker.h"
@@ -26,16 +27,16 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+private:
+    Ui::MainWindow *ui;
     SystemPtr system = System::GetInstance();
     CameraList camList = system->GetCameras();
     std::vector<FlirCamera*> flirCamList;
-    void initCameras();
-    void addCameraWidget(int index);
-    void reloadCameraList();
+    bool oneCameraOpen();
     void closeEvent(QCloseEvent *event);
 private:
     Ui::MainWindow *ui;
 private slots:
-    void showDefaultCam();
+    void openCameraWidget(QListWidgetItem*);
 };
 #endif // MAINWINDOW_H
