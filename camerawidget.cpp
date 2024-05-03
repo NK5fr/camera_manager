@@ -8,7 +8,6 @@ CameraWidget::CameraWidget(FlirCamera *flircam, QWidget *parent)
     : QWidget(parent),
     ui(new Ui::CameraWidget),
     cam(flircam)
-
 {
     ui->setupUi(this);
     QScreen *screen =  QGuiApplication::primaryScreen();
@@ -23,6 +22,8 @@ CameraWidget::CameraWidget(FlirCamera *flircam, QWidget *parent)
     connect(ui->startButton, SIGNAL(clicked(bool)), this, SLOT(startAcquisition()));
     connect(ui->stopButton, SIGNAL(clicked(bool)), this, SLOT(stopAcquisition()));
     ui->stopButton->setEnabled(false);
+
+    cam->startAquisition();
 }
 
 CameraWidget::~CameraWidget()
@@ -78,6 +79,7 @@ void CameraWidget::changeAcquisition(bool mode)
 }
 
 void CameraWidget::stopExisting() {
+    cam->setOpen(false);
     if (this->settings->isVisible()) {
         this->settings->hide();
     }

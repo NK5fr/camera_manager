@@ -11,51 +11,41 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    //initCameras();
-    QObject::connect(ui->pushButton, SIGNAL(clicked(bool)), this, SLOT(showDefaultCam()));
+    for(int i = 0; i < camList.GetSize(); ++i){
+        flirCamList.push_back(new FlirCamera(camList.GetByIndex(i)));
+        string serial = flirCamList[i]->getSerial();
+        QListWidgetItem *item = new QListWidgetItem(QString::fromStdString(serial));
+        item->setTextAlignment(Qt::AlignCenter);
+        item->setFont(QFont ("Courier", 14));
+        ui->cameraList->addItem(item);
+    }
+    connect(ui->cameraList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(openCameraWidget(QListWidgetItem*)));
 }
 
 MainWindow::~MainWindow()
 {
-    qInfo() << "MainWindow cleared";
     camList.Clear();
+    for(FlirCamera* cam : flirCamList){
+        delete cam;
+    }
     system->ReleaseInstance();
     delete ui;
 }
 
-void MainWindow::initCameras() {
-    if (this->camList.GetSize() == 0) {
-        utils::showError("There are no cameras!");
-        return;
+bool MainWindow::oneCameraOpen()
+{
+    for(FlirCamera* cam : flirCamList){
+        if(cam->isOpen()) return true;
     }
-    for (int i = 0 ; i < this->camList.GetSize() ; i++) {
-        this->addCameraWidget(i);
-    }
+    return false;
 }
 
-void MainWindow::addCameraWidget(int index) {
-    // try {
-    //     FlirCamera *currentCamera = new FlirCamera(camList.GetByIndex(index));
-    //     CameraWidget *currentWidget = new CameraWidget(currentCamera, nullptr);
-    //     this->flirCamList.push_back(currentWidget);
-    // } catch (Spinnaker::Exception e) {
-    //     int ret = utils::showError(e.what());
-    // }
-}
-
-void MainWindow::showDefaultCam() {
-    FlirCamera *currentCamera;
-    if (this->flirCamList.empty()) {
-        currentCamera = new FlirCamera(camList.GetByIndex(0));
-        this->flirCamList.push_back(currentCamera);
-    } else {
-        currentCamera = this->flirCamList[0];
+void MainWindow::openCameraWidget(QListWidgetItem * item)
+{
+    int idx = ui->cameraList->row(item);
+    if(!oneCameraOpen()){
+        flirCamList[idx]->setOpen(true);
+        CameraWidget *currentWidget = new CameraWidget(flirCamList[idx], nullptr);
+        currentWidget->show();
     }
-    CameraWidget *currentWidget = new CameraWidget(currentCamera, nullptr);
-    currentWidget->show();
-}
-
-void MainWindow::reloadCameraList() {
-    this->system = System::GetInstance();
-    this->camList = system->GetCameras();
 }

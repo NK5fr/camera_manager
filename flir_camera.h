@@ -33,6 +33,9 @@ public:
     CameraPtr getCamera();
     void setCamera(CameraPtr newCam);
     bool isSteaming();
+    void setOpen(bool);
+    bool isOpen();
+    string getSerial();
 public slots:
     void setExposureTime(int exposure);
 signals:
@@ -43,6 +46,7 @@ private:
     CameraPtr cam = nullptr;
     ImageProcessor processor;
     int count = 0;
+    bool open = false;
 };
 
 #endif // FLIR_CAMERA_H
