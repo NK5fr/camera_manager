@@ -8,6 +8,7 @@ FlirCamera::FlirCamera(CameraPtr cam)
     cam->RegisterEventHandler(*this);
     cam->AcquisitionFrameRateEnable.SetValue(true);
     cam->AcquisitionFrameRate.SetValue(30.0);
+    cam->GainAuto.SetValue(Spinnaker::GainAuto_Off);
     setExposureAuto(false);
 }
 
