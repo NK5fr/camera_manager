@@ -3,6 +3,7 @@
 #include "linkedslider.h"
 #include "settingswidget.h"
 #include "ui_settingswidget.h"
+#include "utils.h"
 
 SettingsWidget::SettingsWidget(FlirCamera *camera, QWidget *parent) :
     QWidget(parent),

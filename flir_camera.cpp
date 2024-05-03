@@ -12,7 +12,6 @@ FlirCamera::FlirCamera(CameraPtr cam)
 
 FlirCamera::~FlirCamera()
 {
-    cam->DeInit();
 }
 
 void FlirCamera::setExposureTime(int exposure) {

@@ -9,13 +9,9 @@
 #include <iostream>
 #include <sstream>
 
+#include "camerawidget.h"
 #include "flir_camera.h"
 #include "settingswidget.h"
-
-using namespace Spinnaker;
-using namespace Spinnaker::GenApi;
-using namespace Spinnaker::GenICam;
-using namespace std;
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -28,21 +24,17 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    SystemPtr system = System::GetInstance();
+    CameraList camList = system->GetCameras();
+    std::vector<FlirCamera*> flirCamList;
+    void initCameras();
+    void addCameraWidget(int index);
+    void reloadCameraList();
 private:
     Ui::MainWindow *ui;
-    SystemPtr system;
-    CameraList camList;
-    FlirCamera *cam;
-    SettingsWidget *page;
-    void getCamera();
-    void changeCameraInfo();
 private slots:
-    void showSettings();
-    void getCameraImage(ImagePtr, int);
-    void startAcquisition();
-    void stopAcquisition();
-    void changeAcquisition(bool streaming);
+    void showDefaultCam();
 };
 #endif // MAINWINDOW_H
