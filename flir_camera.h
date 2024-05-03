@@ -38,8 +38,7 @@ public:
 
     bool isExposureAuto();
     bool isSteaming();
-    void setOpen(bool);
-    bool isOpen();
+    bool isConnected();
     string getSerial();
 public slots:
     void setExposureTime(int exposure);
@@ -55,7 +54,6 @@ private:
     CameraPtr cam = nullptr;
     ImageProcessor processor;
     int frameCount = 0;
-    bool open = false;
     int secondsCount = 0;
     int timerId;
 

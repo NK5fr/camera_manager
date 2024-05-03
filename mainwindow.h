@@ -32,9 +32,13 @@ private:
     SystemPtr system = System::GetInstance();
     CameraList camList = system->GetCameras();
     std::vector<FlirCamera*> flirCamList;
-    bool oneCameraOpen();
     void closeEvent(QCloseEvent *event);
+    void setListWidget();
+    bool open = false;
+    QTimer *refreshTimer = new QTimer;
 private slots:
     void openCameraWidget(QListWidgetItem*);
+    void refresh();
+    void cameraWidgetClosed();
 };
 #endif // MAINWINDOW_H
