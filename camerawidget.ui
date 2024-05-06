@@ -24,9 +24,9 @@
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QLabel" name="label">
+     <widget class="QLabel" name="realFramerate">
       <property name="text">
-       <string>Framerate:</string>
+       <string>Calculated Framerate:</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>

@@ -42,6 +42,7 @@ void MainWindow::openCameraWidget(QListWidgetItem * item)
     int idx = ui->cameraList->row(item);
     cout << flirCamList[idx]->isConnected() << endl;
     if(flirCamList[idx]->isConnected() && !open){
+        refreshTimer->stop();
         open = true;
         CameraWidget *currentWidget = new CameraWidget(flirCamList[idx], nullptr);
         currentWidget->show();
@@ -87,6 +88,7 @@ void MainWindow::refresh()
 void MainWindow::cameraWidgetClosed()
 {
     open = false;
+    refreshTimer->start(3000);
     refresh();
 }
 

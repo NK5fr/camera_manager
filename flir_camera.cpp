@@ -7,6 +7,7 @@ FlirCamera::FlirCamera(CameraPtr cam)
     cam->Init();
     cam->RegisterEventHandler(*this);
     cam->AcquisitionFrameRateEnable.SetValue(true);
+    qInfo() << "cam->AcquisitionFrameRate.SetValue(30.0);";
     cam->AcquisitionFrameRate.SetValue(30.0);
     cam->GainAuto.SetValue(Spinnaker::GainAuto_Off);
     setExposureAuto(false);
@@ -35,11 +36,13 @@ void FlirCamera::setGain(int gain)
     }
 }
 
-void FlirCamera::setFrameRate(int framerate)
+void FlirCamera::updateFixedFrameRate(int framerate)
 {
+    qInfo() << "setFrameRate";
     this->resetTimer();
     this->timerId = startTimer(1000);
     cam->AcquisitionFrameRate.SetValue(framerate);
+    qInfo() << cam->AcquisitionFrameRate.GetValue();
 }
 void FlirCamera::setExposureAuto(bool mode)
 {
@@ -129,7 +132,7 @@ INodeMap &FlirCamera::getINodeMap() {
 
 void FlirCamera::timerEvent(QTimerEvent *event) {
     secondsCount++;
-    emit frameRate(this->getFrameRate());
+    emit frameRate(this->getRealFrameRate());
 }
 
 void FlirCamera::resetTimer()
@@ -140,7 +143,11 @@ void FlirCamera::resetTimer()
     emit frameRate(0);
 }
 
-int FlirCamera::getFrameRate() {
+int FlirCamera::getRealFrameRate() {
     return this->frameCount / this->secondsCount;
+}
+
+int FlirCamera::getFixedFrameRate() {
+    return cam->AcquisitionFrameRate.GetValue();
 }
 

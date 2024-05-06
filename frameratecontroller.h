@@ -13,11 +13,11 @@ class FrameRateController : public QWidget
 
 public:
     explicit FrameRateController(QWidget *parent = nullptr);
+    Ui::FrameRateController *ui;
     ~FrameRateController();
 signals:
     void fixedFrameRateChanged(int);
 private:
-    Ui::FrameRateController *ui;
 private slots:
     void changeFixedFrameRate(int value);
 };

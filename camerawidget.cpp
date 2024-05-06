@@ -4,6 +4,7 @@
 #include "qstyle.h"
 #include "qmessagebox.h"
 #include "frameratecontroller.h"
+#include "linkedslider.h"
 
 CameraWidget::CameraWidget(FlirCamera *flircam, QWidget *parent)
     : QWidget(parent),
@@ -23,9 +24,9 @@ CameraWidget::CameraWidget(FlirCamera *flircam, QWidget *parent)
     connect(ui->startButton, SIGNAL(clicked(bool)), this, SLOT(startAcquisition()));
     connect(ui->stopButton, SIGNAL(clicked(bool)), this, SLOT(stopAcquisition()));
     ui->stopButton->setEnabled(false);
-    connect(cam, SIGNAL(frameRate(int)), this, SLOT(updateFrameRate(int)));
+    connect(cam, SIGNAL(frameRate(int)), this, SLOT(updateCalculatedFrameRate(int)));
     connect(ui->framerateButton, SIGNAL(clicked(bool)), this, SLOT(showFrameRateController()));
-    connect(controller, SIGNAL(fixedFrameRateChanged(int)), cam, SLOT(setFrameRate(int)));
+    connect(controller, SIGNAL(fixedFrameRateChanged(int)), cam, SLOT(updateFixedFrameRate(int)));
     cam->startAquisition();
 
     connect(refreshTimer, SIGNAL(timeout()), this, SLOT(testCameraStatus()));
@@ -122,8 +123,13 @@ void CameraWidget::closeEvent(QCloseEvent *event) {
 
 }
 
-void CameraWidget::updateFrameRate(int frameRate) {
+void CameraWidget::updateCalculatedFrameRate(int frameRate) {
     ui->framerate->setText(QString::number(frameRate));
+}
+
+void CameraWidget::updateFixedFrameRate(int fixedFrameRate)
+{
+    ui->realFramerate->setText(QString::number(fixedFrameRate));
 }
 
 void CameraWidget::testCameraStatus()

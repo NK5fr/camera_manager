@@ -46,7 +46,8 @@ private slots:
     void changeAcquisition(bool streaming);
     void stopExisting();
     void showFrameRateController();
-    void updateFrameRate(int frameRate);
+    void updateCalculatedFrameRate(int frameRate);
+    void updateFixedFrameRate(int fixedFrameRate);
     void testCameraStatus();
 signals:
     void widgetClosed();

@@ -29,7 +29,8 @@ public:
     std::string getModelName();
     std::string getVendorName();
     CameraPtr getCamera();
-    int getFrameRate();
+    int getRealFrameRate();
+    int getFixedFrameRate();
     int getExposureTime();
     int getGain();
 
@@ -43,7 +44,7 @@ public:
 public slots:
     void setExposureTime(int exposure);
     void setGain(int gain);
-    void setFrameRate(int framerate);
+    void updateFixedFrameRate(int framerate);
 signals:
     void exposureTimeChanged(int);
     void gainChanged(int);
