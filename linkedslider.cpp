@@ -9,7 +9,8 @@ LinkedSlider::LinkedSlider(QObject *parent, QLabel *label, QSlider *input, std::
     QTimer::singleShot(0, this, &LinkedSlider::changeLabel);
 }
 
-void LinkedSlider::changeLabel() {
+void LinkedSlider::changeLabel()
+{
     QString newText = QString("");
     newText.append(title);
     newText.append(QString::number(input->value()));

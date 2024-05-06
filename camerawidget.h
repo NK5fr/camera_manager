@@ -10,9 +10,9 @@
 #include "frameratecontroller.h"
 #include "settingswidget.h"
 
-#include <QWidget>
-#include <QTimer>
 #include <QElapsedTimer>
+#include <QTimer>
+#include <QWidget>
 
 using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
@@ -32,6 +32,7 @@ public:
     ~CameraWidget();
 
     void closeEvent(QCloseEvent *event);
+
 private:
     Ui::CameraWidget *ui;
     FlirCamera *cam;

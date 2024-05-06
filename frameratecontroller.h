@@ -6,7 +6,6 @@
 #include <iostream>
 #include <sstream>
 
-
 using namespace std;
 
 namespace Ui {
@@ -23,6 +22,7 @@ public:
     ~FrameRateController();
 signals:
     void fixedFrameRateChanged(int);
+
 private:
 private slots:
     void changeFixedFrameRate(int value);

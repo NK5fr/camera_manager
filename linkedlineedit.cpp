@@ -1,10 +1,12 @@
 #include "linkedlineedit.h"
-#include "string.h"
-#include "string.h"
 #include "ctype.h"
-#include "qtooltip.h"
 #include "qtimer.h"
-LinkedLineEdit::LinkedLineEdit(QObject *parent, QLabel *label, QLineEdit *input, std::string stringTitle)
+#include "qtooltip.h"
+#include "string.h"
+LinkedLineEdit::LinkedLineEdit(QObject *parent,
+                               QLabel *label,
+                               QLineEdit *input,
+                               std::string stringTitle)
 {
     this->label = label;
     this->input = input;

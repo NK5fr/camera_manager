@@ -4,14 +4,14 @@
 #include <QRect>
 #include <QScreen>
 
-
 namespace utils {
-    void reCenter(QWidget toCenter, QScreen *screen);
+    QRect reCenter(QWidget *toCenter, QScreen *screen);
     QRect reCenter(int width, int height, QScreen *screen);
-    void reCenterOffSet(QWidget toCenter, QScreen *screen, char direction, int offset);
-    void reCenterWidget(QWidget toCenter, QWidget widget);
-    void center(QRect toCenter, QRect rect);
-    void centerOnPoint(QRect toCenter, QPoint point);
+    QRect reCenterOffSet(QWidget *toCenter, QScreen *screen, char direction, int offset);
+    QRect reCenterWidget(QWidget *toCenter, QWidget *widget);
+    QRect center(QRect toCenter, QRect rect);
+    QRect centerOnPoint(QRect toCenter, QPoint point);
+    QRect offSet(QWidget *toOffset, char direction, int offset);
     int showError(std::string text);
 }
 

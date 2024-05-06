@@ -2,7 +2,10 @@
 
 #include <qtimer.h>
 
-LinkedComboBox::LinkedComboBox(QObject *parent, QLabel *label, QComboBox *input, std::string stringTitle)
+LinkedComboBox::LinkedComboBox(QObject *parent,
+                               QLabel *label,
+                               QComboBox *input,
+                               std::string stringTitle)
 {
     this->label = label;
     this->input = input;

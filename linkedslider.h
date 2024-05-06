@@ -7,7 +7,10 @@
 class LinkedSlider : public ILinked
 {
 public:
-    explicit LinkedSlider(QObject *parent = nullptr, QLabel *label = nullptr, QSlider *input= nullptr, std::string stringTitle = "");
+    explicit LinkedSlider(QObject *parent = nullptr,
+                          QLabel *label = nullptr,
+                          QSlider *input = nullptr,
+                          std::string stringTitle = "");
     QSlider *input;
 public slots:
     void changeLabel();

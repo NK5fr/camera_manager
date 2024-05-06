@@ -4,6 +4,10 @@
 #include "flir_camera.h"
 
 #include <QWidget>
+#include <iostream>
+#include <sstream>
+
+using namespace std;
 
 namespace Ui {
 class SettingsWidget;
@@ -20,12 +24,20 @@ public:
     int defaultExpoMax = 20000;
     int defaultExpoMin = 6;
     void initGainSlider();
+    int defaultGainMax = 18;
+    int defaultGainMin = 1;
+    void initTrigger();
+    void initTriggerMode();
 private:
     Ui::SettingsWidget *ui;
-    FlirCamera* cam;
+    FlirCamera *cam;
 private slots:
-    void setMaxSliderWidth();
+    void setMaxExpoSliderWidth();
     void setExposureMode(Qt::CheckState state);
+    void setMinExpoSliderWidth();
+    void setMinGainSliderWidth();
+    void setMaxGainSliderWidth();
+    void setGainMode(Qt::CheckState state);
 };
 
 #endif // SETTINGSWIDGET_H

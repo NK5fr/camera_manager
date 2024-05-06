@@ -6,14 +6,31 @@
 #include <qlabel.h>
 #include <qmessagebox.h>
 
-QRect utils::reCenter(int width, int height, QScreen *screen) {
-    QRect newRect = QRect(0,0, width, height);
-    newRect.moveCenter(screen->geometry().center());
-    return newRect;
+int utils::showError(std::string text)
+{
+    return QMessageBox(QMessageBox::NoIcon,
+                       "Error!",
+                       QString::fromStdString(text),
+                       QMessageBox::StandardButton::Ok)
+        .exec();
 }
 
-void  utils::reCenterOffSet(QWidget toCenter, QScreen *screen, char direction, int offset)
+QRect utils::reCenter(QWidget* toCenter, QScreen *screen)
 {
+    return utils::centerOnPoint(toCenter->geometry(), screen->geometry().center());
+}
+
+QRect utils::reCenter(int width, int height, QScreen *screen)
+{
+    QRect rect = QRect(0,0,width, height);
+    rect.moveCenter(screen->geometry().center());
+    return rect;
+}
+
+QRect utils::reCenterOffSet(QWidget *toCenter, QScreen *screen, char direction, int offset)
+{
+    qInfo() << toCenter->width();
+    qInfo() << toCenter->height();
     QPoint screenCenter = screen->geometry().center();
     switch (direction) {
     case 'b':
@@ -29,32 +46,43 @@ void  utils::reCenterOffSet(QWidget toCenter, QScreen *screen, char direction, i
         screenCenter.setY(screenCenter.y() - offset);
         break;
     }
-    utils::centerOnPoint(toCenter.geometry(), screenCenter);
+    return utils::centerOnPoint(toCenter->geometry(), screenCenter);
 }
 
-int utils::showError(std::string text)
+QRect utils::reCenterWidget(QWidget *toCenter, QWidget *widget)
 {
-    return QMessageBox(QMessageBox::NoIcon, "Error!", QString::fromStdString(text), QMessageBox::StandardButton::Ok).exec();
-
+    return utils::centerOnPoint(toCenter->geometry(), widget->mapToGlobal(widget->frameGeometry().center()));
 }
 
-
-void utils::center(QRect toCenter, QRect rect)
+QRect utils::center(QRect toCenter, QRect rect)
 {
-    toCenter.moveCenter(rect.center());
+    return utils::centerOnPoint(toCenter, rect.center());
 }
 
-void utils::reCenterWidget(QWidget toCenter, QWidget widget)
+QRect utils::centerOnPoint(QRect toCenter, QPoint point)
 {
-    utils::center(toCenter.geometry(), widget.geometry());
-}
-
-void utils::reCenter(QWidget toCenter, QScreen *screen)
-{
-    utils::center(toCenter.geometry(), screen->geometry());
-}
-
-void utils::centerOnPoint(QRect toCenter, QPoint point)
-{
+    qInfo() << toCenter.width();
+    qInfo() << toCenter.height();
     toCenter.moveCenter(point);
+    return toCenter;
+}
+
+QRect utils::offSet(QWidget *toOffset, char direction, int offset)
+{
+    QPoint offsetPoint = toOffset->geometry().center();
+    switch (direction) {
+    case 'b':
+        offsetPoint.setY(offsetPoint.y() + offset);
+        break;
+    case 'r':
+        offsetPoint.setX(offsetPoint.x() + offset);
+        break;
+    case 'l':
+        offsetPoint.setX(offsetPoint.x() - offset);
+        break;
+    default:
+        offsetPoint.setY(offsetPoint.y() - offset);
+        break;
+    }
+    return utils::centerOnPoint(toOffset->geometry(), offsetPoint);
 }

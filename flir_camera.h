@@ -20,9 +20,17 @@ class FlirCamera : public QObject, public ImageEventHandler
 public:
     FlirCamera(CameraPtr);
     ~FlirCamera();
-    void startAquisition() { cam->BeginAcquisition(); emit streaming(true); }
-    void stopAquisition() { cam->EndAcquisition(); emit streaming(false); }
-    void changeAcquisition(bool streaming) { (streaming) ? stopAquisition() : startAquisition();}
+    void startAquisition()
+    {
+        cam->BeginAcquisition();
+        emit streaming(true);
+    }
+    void stopAquisition()
+    {
+        cam->EndAcquisition();
+        emit streaming(false);
+    }
+    void changeAcquisition(bool streaming) { (streaming) ? stopAquisition() : startAquisition(); }
     void OnImageEvent(ImagePtr);
 
     INodeMap &getINodeMap();
@@ -36,8 +44,10 @@ public:
 
     void setCamera(CameraPtr newCam);
     void setExposureAuto(bool mode);
+    void setGainAuto(bool);
 
     bool isExposureAuto();
+    bool isGainAuto();
     bool isSteaming();
     bool isConnected();
     string getSerial();
@@ -45,16 +55,21 @@ public slots:
     void setExposureTime(int exposure);
     void setGain(int gain);
     void updateFixedFrameRate(int framerate);
+    void setTrigger(QString value);
+    void setTriggerMode(QString value);
 signals:
     void exposureTimeChanged(int);
     void gainChanged(int);
     void imageRetrieved(ImagePtr, int);
     void streaming(bool);
+    void triggerChange(QString);
+    void triggerModeChange(QString);
 private:
     CameraPtr cam = nullptr;
     ImageProcessor processor;
     int frameCount = 0;
-
+    map<string, Spinnaker::TriggerSourceEnums> triggerValues;
+    map<string, Spinnaker::TriggerModeEnums> triggerModeValues;
 };
 
 #endif // FLIR_CAMERA_H

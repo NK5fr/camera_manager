@@ -1,9 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QListWidgetItem>
 #include <QMainWindow>
 #include <QTimer>
-#include <QListWidgetItem>
 
 #include "SpinGenApi/SpinnakerGenApi.h"
 #include "Spinnaker.h"
@@ -27,17 +27,18 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
 private:
     Ui::MainWindow *ui;
     SystemPtr system = System::GetInstance();
     CameraList camList = system->GetCameras();
-    std::vector<FlirCamera*> flirCamList;
+    std::vector<FlirCamera *> flirCamList;
     void closeEvent(QCloseEvent *event);
     void setListWidget();
     bool open = false;
     QTimer *refreshTimer = new QTimer;
 private slots:
-    void openCameraWidget(QListWidgetItem*);
+    void openCameraWidget(QListWidgetItem *);
     void refresh();
     void cameraWidgetClosed();
 };

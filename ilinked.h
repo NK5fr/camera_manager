@@ -1,8 +1,8 @@
 #ifndef ILINKED_H
 #define ILINKED_H
 
-#include <QObject>
 #include <QLabel>
+#include <QObject>
 
 class ILinked : public QObject
 {

@@ -8,7 +8,10 @@
 class LinkedComboBox : public ILinked
 {
 public:
-    LinkedComboBox(QObject *parent = nullptr, QLabel *label = nullptr, QComboBox *input= nullptr, std::string stringTitle = "");
+    LinkedComboBox(QObject *parent = nullptr,
+                   QLabel *label = nullptr,
+                   QComboBox *input = nullptr,
+                   std::string stringTitle = "");
     QComboBox *input;
 public slots:
     void changeLabel();
