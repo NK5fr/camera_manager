@@ -6,9 +6,12 @@
 
 
 namespace utils {
-    QRect reCenter(QRect rect, QScreen *screen);
-    QRect reCenter(QScreen *screen, int width, int height);
-    QRect reCenterOffSet(QRect rect, QScreen *screen, char direction, int offset);
+    void reCenter(QWidget toCenter, QScreen *screen);
+    QRect reCenter(int width, int height, QScreen *screen);
+    void reCenterOffSet(QWidget toCenter, QScreen *screen, char direction, int offset);
+    void reCenterWidget(QWidget toCenter, QWidget widget);
+    void center(QRect toCenter, QRect rect);
+    void centerOnPoint(QRect toCenter, QPoint point);
     int showError(std::string text);
 }
 
