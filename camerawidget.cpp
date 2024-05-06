@@ -24,13 +24,15 @@ CameraWidget::CameraWidget(FlirCamera *flircam, QWidget *parent)
     connect(ui->startButton, SIGNAL(clicked(bool)), this, SLOT(startAcquisition()));
     connect(ui->stopButton, SIGNAL(clicked(bool)), this, SLOT(stopAcquisition()));
     ui->stopButton->setEnabled(false);
-    connect(cam, SIGNAL(frameRate(int)), this, SLOT(updateCalculatedFrameRate(int)));
     connect(ui->framerateButton, SIGNAL(clicked(bool)), this, SLOT(showFrameRateController()));
     connect(controller, SIGNAL(fixedFrameRateChanged(int)), cam, SLOT(updateFixedFrameRate(int)));
     cam->startAquisition();
 
     connect(refreshTimer, SIGNAL(timeout()), this, SLOT(testCameraStatus()));
     refreshTimer->start(3000);
+
+    elapsedTimer.start();
+    ui->framerate->setText(QString::number(30));
 }
 
 CameraWidget::~CameraWidget()
@@ -44,7 +46,7 @@ CameraWidget::~CameraWidget()
 
 void CameraWidget::changeCameraInfo()
 {
-    ui->name->setText(QString::fromStdString(cam->getModelName()));
+    ui->name->setText(QString::fromStdString(cam->getModelName() + " " + cam->getSerial()));
     ui->serial->setText(QString::fromStdString(cam->getVendorName()));
 }
 
@@ -69,6 +71,16 @@ void CameraWidget::getCameraImage(ImagePtr convertedImage, int count)
                  QImage::Format_BGR888);
     ui->cameraRendering->setPixmap(QPixmap::fromImage(
         image.scaled(ui->cameraRendering->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation)));
+
+    int elapsed = elapsedTimer.elapsed();
+    fpsSum += 1000/elapsed;
+    ++fpsCount;
+    if(fpsCount >= cam->getFixedFrameRate()){
+        ui->framerate->setText(QString::number(fpsSum/fpsCount));
+        fpsSum = 0;
+        fpsCount = 0;
+    }
+    elapsedTimer.restart();
 }
 
 void CameraWidget::startAcquisition()
@@ -76,6 +88,7 @@ void CameraWidget::startAcquisition()
     if(!cam->isConnected()){
         close();
     }else{
+        ui->framerate->setText(QString::number(cam->getFixedFrameRate()));
         cam->startAquisition();
     }
 }
@@ -85,6 +98,7 @@ void CameraWidget::stopAcquisition()
     if(!cam->isConnected()){
         close();
     }else{
+        ui->framerate->setText(QString::number(0));
         cam->stopAquisition();
     }
 
@@ -121,15 +135,6 @@ void CameraWidget::closeEvent(QCloseEvent *event) {
     emit widgetClosed();
     this->stopExisting();
 
-}
-
-void CameraWidget::updateCalculatedFrameRate(int frameRate) {
-    ui->framerate->setText(QString::number(frameRate));
-}
-
-void CameraWidget::updateFixedFrameRate(int fixedFrameRate)
-{
-    ui->realFramerate->setText(QString::number(fixedFrameRate));
 }
 
 void CameraWidget::testCameraStatus()
