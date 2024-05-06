@@ -36,8 +36,10 @@ public:
 
     void setCamera(CameraPtr newCam);
     void setExposureAuto(bool mode);
+    void setGainAuto(bool);
 
     bool isExposureAuto();
+    bool isGainAuto();
     bool isSteaming();
     bool isConnected();
     string getSerial();

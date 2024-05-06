@@ -56,6 +56,18 @@ void FlirCamera::setExposureAuto(bool mode)
     }
 }
 
+void FlirCamera::setGainAuto(bool mode){
+    try{
+        if(mode){
+            cam->GainAuto.SetValue(Spinnaker::GainAuto_Continuous);
+        }else{
+            cam->GainAuto.SetValue(Spinnaker::GainAuto_Off);
+        }
+    }catch(Spinnaker::Exception exception){
+        qInfo() << exception.what();
+    }
+}
+
 void FlirCamera::OnImageEvent(ImagePtr image)
 {
     ImagePtr converted_image = processor.Convert(image, PixelFormat_BGR8);
@@ -75,6 +87,11 @@ int FlirCamera::getGain()
 bool FlirCamera::isExposureAuto() {
     Spinnaker::ExposureAutoEnums value = cam->ExposureAuto.GetValue();
     return value != Spinnaker::ExposureAuto_Off;
+}
+
+bool FlirCamera::isGainAuto() {
+    Spinnaker::GainAutoEnums value = cam->GainAuto.GetValue();
+    return value != Spinnaker::GainAuto_Off;
 }
 
 std::string FlirCamera::getModelName() {

@@ -20,12 +20,18 @@ public:
     int defaultExpoMax = 20000;
     int defaultExpoMin = 6;
     void initGainSlider();
+    int defaultGainMax = 18;
+    int defaultGainMin = 1;
 private:
     Ui::SettingsWidget *ui;
     FlirCamera* cam;
 private slots:
-    void setMaxSliderWidth();
+    void setMaxExpoSliderWidth();
     void setExposureMode(Qt::CheckState state);
+    void setMinExpoSliderWidth();
+    void setMinGainSliderWidth();
+    void setMaxGainSliderWidth();
+    void setGainMode(Qt::CheckState state);
 };
 
 #endif // SETTINGSWIDGET_H

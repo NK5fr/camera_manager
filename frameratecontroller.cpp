@@ -8,7 +8,7 @@ FrameRateController::FrameRateController(QWidget *parent)
     , ui(new Ui::FrameRateController)
 {
     ui->setupUi(this);
-    this->setGeometry(utils::reCenterOffSet(this->geometry(), QApplication::primaryScreen(), 'l', 400));
+    //this->setGeometry(utils::reCenterOffSet(this->geometry(), QApplication::primaryScreen(), 'l', 400));
     ui->frameRateInput->setMinimum(1);
     ui->frameRateInput->setValue(30);
     LinkedSlider *linkedFrameRate = new LinkedSlider(nullptr, ui->frameRateValue, ui->frameRateInput, "Fixed FrameRate: "); linkedFrameRate->setParent(this);
