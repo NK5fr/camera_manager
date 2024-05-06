@@ -40,12 +40,7 @@ SettingsWidget::SettingsWidget(FlirCamera *camera, QWidget *parent)
     ui->autoExposureInput->setChecked(cam->isExposureAuto());
     ui->maxExposureInput->setText(QString::number(defaultExpoMax));
     ui->minExposureInput->setText(QString::number(defaultExpoMin));
-    ui->minExposureInput->setText(QString::number(defaultExpoMin));
     initExposureSlider();
-
-    ui->autoGainInput->setChecked(cam->isGainAuto());
-    ui->maxGainInput->setText(QString::number(defaultGainMax));
-    ui->minGainInput->setText(QString::number(defaultGainMin));
 
     ui->autoGainInput->setChecked(cam->isGainAuto());
     ui->maxGainInput->setText(QString::number(defaultGainMax));
