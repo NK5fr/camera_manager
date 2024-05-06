@@ -3,6 +3,12 @@
 
 #include <QWidget>
 
+#include <iostream>
+#include <sstream>
+
+
+using namespace std;
+
 namespace Ui {
 class FrameRateController;
 }

@@ -20,8 +20,8 @@ class FlirCamera : public QObject, public ImageEventHandler
 public:
     FlirCamera(CameraPtr);
     ~FlirCamera();
-    void startAquisition() { cam->BeginAcquisition(); timerId = startTimer(1000); emit streaming(true); }
-    void stopAquisition() { cam->EndAcquisition(); resetTimer(); emit streaming(false); }
+    void startAquisition() { cam->BeginAcquisition(); emit streaming(true); }
+    void stopAquisition() { cam->EndAcquisition(); emit streaming(false); }
     void changeAcquisition(bool streaming) { (streaming) ? stopAquisition() : startAquisition();}
     void OnImageEvent(ImagePtr);
 
@@ -50,16 +50,10 @@ signals:
     void gainChanged(int);
     void imageRetrieved(ImagePtr, int);
     void streaming(bool);
-    void frameRate(int);
 private:
     CameraPtr cam = nullptr;
     ImageProcessor processor;
     int frameCount = 0;
-    int secondsCount = 0;
-    int timerId;
-
-    void timerEvent(QTimerEvent *event);
-    void resetTimer();
 
 };
 

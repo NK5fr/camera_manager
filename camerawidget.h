@@ -12,6 +12,7 @@
 
 #include <QWidget>
 #include <QTimer>
+#include <QElapsedTimer>
 
 using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
@@ -38,6 +39,9 @@ private:
     FrameRateController *controller;
     void changeCameraInfo();
     QTimer *refreshTimer = new QTimer();
+    int fpsSum = 0;
+    int fpsCount = 0;
+    QElapsedTimer elapsedTimer;
 private slots:
     void showSettings();
     void getCameraImage(ImagePtr, int);
@@ -46,8 +50,6 @@ private slots:
     void changeAcquisition(bool streaming);
     void stopExisting();
     void showFrameRateController();
-    void updateCalculatedFrameRate(int frameRate);
-    void updateFixedFrameRate(int fixedFrameRate);
     void testCameraStatus();
 signals:
     void widgetClosed();

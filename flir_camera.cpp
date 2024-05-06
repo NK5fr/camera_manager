@@ -39,8 +39,6 @@ void FlirCamera::setGain(int gain)
 void FlirCamera::updateFixedFrameRate(int framerate)
 {
     qInfo() << "setFrameRate";
-    this->resetTimer();
-    this->timerId = startTimer(1000);
     cam->AcquisitionFrameRate.SetValue(framerate);
     qInfo() << cam->AcquisitionFrameRate.GetValue();
 }
@@ -128,23 +126,6 @@ string FlirCamera::getSerial()
 
 INodeMap &FlirCamera::getINodeMap() {
     return cam->GetTLDeviceNodeMap();
-}
-
-void FlirCamera::timerEvent(QTimerEvent *event) {
-    secondsCount++;
-    emit frameRate(this->getRealFrameRate());
-}
-
-void FlirCamera::resetTimer()
-{
-    this->frameCount = 0;
-    this->secondsCount = 0;
-    killTimer(timerId);
-    emit frameRate(0);
-}
-
-int FlirCamera::getRealFrameRate() {
-    return this->frameCount / this->secondsCount;
 }
 
 int FlirCamera::getFixedFrameRate() {
