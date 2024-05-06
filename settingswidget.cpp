@@ -20,6 +20,7 @@ SettingsWidget::SettingsWidget(FlirCamera *camera, QWidget *parent)
     LinkedLineEdit *linkedMinGain = new LinkedLineEdit(nullptr, ui->minGainValue, ui->minGainInput); linkedMinGain->setParent(this);
     LinkedSlider *linkedGain = new LinkedSlider(nullptr, ui->gainValue, ui->exposureInput_2); linkedGain->setParent(this);
 
+
     LinkedComboBox *linkedTrigger = new LinkedComboBox(nullptr, ui->triggerValue, ui->triggerInput); linkedTrigger->setParent(this);
     LinkedComboBox *linkedTriggerMode = new LinkedComboBox(nullptr, ui->triggerModeValue, ui->triggerModeInput); linkedTriggerMode->setParent(this);
 
@@ -39,7 +40,12 @@ SettingsWidget::SettingsWidget(FlirCamera *camera, QWidget *parent)
     ui->autoExposureInput->setChecked(cam->isExposureAuto());
     ui->maxExposureInput->setText(QString::number(defaultExpoMax));
     ui->minExposureInput->setText(QString::number(defaultExpoMin));
+    ui->minExposureInput->setText(QString::number(defaultExpoMin));
     initExposureSlider();
+
+    ui->autoGainInput->setChecked(cam->isGainAuto());
+    ui->maxGainInput->setText(QString::number(defaultGainMax));
+    ui->minGainInput->setText(QString::number(defaultGainMin));
 
     ui->autoGainInput->setChecked(cam->isGainAuto());
     ui->maxGainInput->setText(QString::number(defaultGainMax));
@@ -67,11 +73,18 @@ void SettingsWidget::setMaxExpoSliderWidth() {
     ui->exposureInput->setMaximum(intValue);
 }
 
+void SettingsWidget::setExposureMode(Qt::CheckState state) {
+    bool isAuto = (state == Qt::Checked);
+    ui->exposureInput->setEnabled(!isAuto);
+    cam->setExposureAuto(isAuto);
+}
+
 void SettingsWidget::setMinExpoSliderWidth() {
     QString value = ui->minExposureInput->text();
     int intValue = value.toInt();
     ui->exposureInput->setMinimum(intValue);
 }
+
 
 void SettingsWidget::initExposureSlider() {
     int defaultExposureValue = cam->getExposureTime();
@@ -79,12 +92,6 @@ void SettingsWidget::initExposureSlider() {
     exposureInput->setMaximum(defaultExpoMax);
     exposureInput->setMinimum(defaultExpoMin);
     cam->setExposureTime(defaultExposureValue);
-}
-
-void SettingsWidget::setExposureMode(Qt::CheckState state) {
-    bool isAuto = (state == Qt::Checked);
-    ui->exposureInput->setEnabled(!isAuto);
-    cam->setExposureAuto(isAuto);
 }
 
 void SettingsWidget::setGainMode(Qt::CheckState state) {

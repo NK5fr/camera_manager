@@ -9,6 +9,7 @@ FrameRateController::FrameRateController(QWidget *parent)
 {
     ui->setupUi(this);
     ui->frameRateInput->setMinimum(1);
+    ui->frameRateInput->setMaximum(60);
     ui->frameRateInput->setValue(30);
     LinkedSlider *linkedFrameRate = new LinkedSlider(nullptr,
                                                      ui->frameRateValue,
