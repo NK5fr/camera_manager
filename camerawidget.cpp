@@ -88,6 +88,7 @@ void CameraWidget::startAcquisition()
     if(!cam->isConnected()){
         close();
     }else{
+        ui->framerate->setText(QString::number(cam->getFixedFrameRate()));
         cam->startAquisition();
     }
 }
@@ -97,6 +98,7 @@ void CameraWidget::stopAcquisition()
     if(!cam->isConnected()){
         close();
     }else{
+        ui->framerate->setText(QString::number(0));
         cam->stopAquisition();
     }
 
