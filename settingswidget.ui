@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>300</height>
+    <height>406</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,18 +19,60 @@
      <x>10</x>
      <y>8</y>
      <width>380</width>
-     <height>231</height>
+     <height>383</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout">
-    <item row="5" column="0">
+    <item row="3" column="0">
+     <widget class="QLabel" name="triggerMode">
+      <property name="text">
+       <string>Trigger Mode:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <layout class="QHBoxLayout" name="horizontalLayout_7">
+      <item>
+       <widget class="QComboBox" name="triggerModeInput"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="triggerModeValue">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="triggerLabel">
+      <property name="text">
+       <string>Trigger Source:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1">
+     <layout class="QHBoxLayout" name="horizontalLayout_6">
+      <item>
+       <widget class="QComboBox" name="triggerInput"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="triggerValue">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="6" column="0">
      <widget class="QLabel" name="maxExposureLabel">
       <property name="text">
        <string>Max Exposure Time:</string>
       </property>
      </widget>
     </item>
-    <item row="5" column="1">
+    <item row="6" column="1">
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
        <widget class="QLineEdit" name="maxExposureInput"/>
@@ -44,14 +86,35 @@
       </item>
      </layout>
     </item>
-    <item row="6" column="0">
+    <item row="7" column="0">
+     <widget class="QLabel" name="minExposureLabel">
+      <property name="text">
+       <string>Min Exposure Time:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="1">
+     <layout class="QHBoxLayout" name="horizontalLayout_8">
+      <item>
+       <widget class="QLineEdit" name="minExposureInput"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="minExposureValue">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="8" column="0">
      <widget class="QLabel" name="autoExposureLabel">
       <property name="text">
        <string>Enable Auto Exposure:</string>
       </property>
      </widget>
     </item>
-    <item row="6" column="1">
+    <item row="8" column="1">
      <layout class="QHBoxLayout" name="horizontalLayout_4">
       <item>
        <widget class="QCheckBox" name="autoExposureInput">
@@ -72,14 +135,14 @@
       </item>
      </layout>
     </item>
-    <item row="7" column="0">
+    <item row="9" column="0">
      <widget class="QLabel" name="exposureLabel">
       <property name="text">
        <string>Exposure Time:</string>
       </property>
      </widget>
     </item>
-    <item row="7" column="1">
+    <item row="9" column="1">
      <layout class="QHBoxLayout" name="horizontalLayout_5">
       <item>
        <widget class="QSlider" name="exposureInput">
@@ -97,14 +160,45 @@
       </item>
      </layout>
     </item>
-    <item row="9" column="0">
+    <item row="11" column="0">
+     <widget class="QLabel" name="maxGainLabel">
+      <property name="text">
+       <string>Max Gain:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="12" column="0">
+     <widget class="QLabel" name="minExposureLabel_2">
+      <property name="text">
+       <string>Min Gain:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="13" column="0">
+     <widget class="QLabel" name="autoGainLabel">
+      <property name="text">
+       <string>Enable Auto Gain:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="13" column="1">
+     <widget class="QCheckBox" name="autoGainInput">
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="14" column="0">
      <widget class="QLabel" name="deviceLabel">
       <property name="text">
        <string>Gain</string>
       </property>
      </widget>
     </item>
-    <item row="9" column="1">
+    <item row="14" column="1">
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
        <widget class="QSlider" name="exposureInput_2">
@@ -122,20 +216,27 @@
       </item>
      </layout>
     </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="triggerLabel">
-      <property name="text">
-       <string>Trigger Source:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <layout class="QHBoxLayout" name="horizontalLayout_6">
+    <item row="11" column="1">
+     <layout class="QHBoxLayout" name="horizontalLayout_10">
       <item>
-       <widget class="QComboBox" name="triggerInput"/>
+       <widget class="QLineEdit" name="maxGainInput"/>
       </item>
       <item>
-       <widget class="QLabel" name="triggerValue">
+       <widget class="QLabel" name="maxGainValue">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="12" column="1">
+     <layout class="QHBoxLayout" name="horizontalLayout_11">
+      <item>
+       <widget class="QLineEdit" name="minGainInput"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="minGainValue">
         <property name="text">
          <string>TextLabel</string>
         </property>
