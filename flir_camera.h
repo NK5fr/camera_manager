@@ -47,16 +47,21 @@ public slots:
     void setExposureTime(int exposure);
     void setGain(int gain);
     void updateFixedFrameRate(int framerate);
+    void setTrigger(QString value);
+    void setTriggerMode(QString value);
 signals:
     void exposureTimeChanged(int);
     void gainChanged(int);
     void imageRetrieved(ImagePtr, int);
     void streaming(bool);
+    void triggerChange(QString);
+    void triggerModeChange(QString);
 private:
     CameraPtr cam = nullptr;
     ImageProcessor processor;
     int frameCount = 0;
-
+    map<string, Spinnaker::TriggerSourceEnums> triggerValues;
+    map<string, Spinnaker::TriggerModeEnums> triggerModeValues;
 };
 
 #endif // FLIR_CAMERA_H

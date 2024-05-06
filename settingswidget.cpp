@@ -45,6 +45,15 @@ SettingsWidget::SettingsWidget(FlirCamera *camera, QWidget *parent) :
     ui->maxGainInput->setText(QString::number(defaultGainMax));
     ui->minGainInput->setText(QString::number(defaultGainMin));
     initGainSlider();
+
+    QObject::connect(ui->triggerInput, SIGNAL(currentTextChanged(QString)), cam, SLOT(setTrigger(QString)));
+    QObject::connect(cam, SIGNAL(triggerChange(QString)), ui->triggerInput, SLOT(setCurrentText(QString)));
+
+    QObject::connect(ui->triggerModeInput, SIGNAL(currentTextChanged(QString)), cam, SLOT(setTriggerMode(QString)));
+    QObject::connect(cam, SIGNAL(triggerModeChange(QString)), ui->triggerModeInput, SLOT(setCurrentText(QString)));
+
+    initTrigger();
+    initTriggerMode();
 }
 
 SettingsWidget::~SettingsWidget()
@@ -85,7 +94,7 @@ void SettingsWidget::setMaxGainSliderWidth() {
 }
 
 void SettingsWidget::setMinGainSliderWidth() {
-    QString value = ui->maxGainInput->text();
+    QString value = ui->minGainInput->text();
     int intValue = value.toInt();
     ui->exposureInput_2->setMinimum(intValue);
 }
@@ -103,4 +112,14 @@ void SettingsWidget::setGainMode(Qt::CheckState state) {
     bool isAuto = (state == Qt::Checked);
     ui->exposureInput_2->setEnabled(!isAuto);
     cam->setGainAuto(isAuto);
+}
+
+void SettingsWidget::initTrigger(){
+    ui->triggerInput->addItem("software");
+    ui->triggerInput->addItem("line0");
+}
+
+void SettingsWidget::initTriggerMode(){
+    ui->triggerModeInput->addItem("off");
+    ui->triggerModeInput->addItem("on");
 }

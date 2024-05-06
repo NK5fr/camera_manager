@@ -4,6 +4,10 @@
 #include "flir_camera.h"
 
 #include <QWidget>
+#include <iostream>
+#include <sstream>
+
+using namespace std;
 
 namespace Ui {
 class SettingsWidget;
@@ -22,6 +26,8 @@ public:
     void initGainSlider();
     int defaultGainMax = 18;
     int defaultGainMin = 1;
+    void initTrigger();
+    void initTriggerMode();
 private:
     Ui::SettingsWidget *ui;
     FlirCamera* cam;

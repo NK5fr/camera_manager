@@ -11,6 +11,12 @@ FlirCamera::FlirCamera(CameraPtr cam)
     cam->AcquisitionFrameRate.SetValue(30.0);
     cam->GainAuto.SetValue(Spinnaker::GainAuto_Off);
     setExposureAuto(false);
+
+    triggerValues["software"] =  Spinnaker::TriggerSource_Software;
+    triggerValues["line0"] =  Spinnaker::TriggerSource_Line0;
+
+    triggerModeValues["off"] = Spinnaker::TriggerMode_Off;
+    triggerModeValues["on"] = Spinnaker::TriggerMode_On;
 }
 
 FlirCamera::~FlirCamera()
@@ -147,5 +153,17 @@ INodeMap &FlirCamera::getINodeMap() {
 
 int FlirCamera::getFixedFrameRate() {
     return cam->AcquisitionFrameRate.GetValue();
+}
+
+void FlirCamera::setTrigger(QString v){
+    string value = v.toStdString();
+    cam->TriggerSource.SetValue(triggerValues.at(value));
+    emit triggerChange(v);
+}
+
+void FlirCamera::setTriggerMode(QString v){
+    string value = v.toStdString();
+    cam->TriggerMode.SetValue(triggerModeValues.at(value));
+    emit triggerModeChange(v);
 }
 
