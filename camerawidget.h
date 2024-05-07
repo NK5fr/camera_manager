@@ -49,7 +49,6 @@ private:
     std::string filePath = "../../images";
     QElapsedTimer elapsedTimer;
     bool shouldTakePicture = false;
-private slots:
     void showSettings();
     void getCameraImage(ImagePtr, int);
     void startAcquisition();

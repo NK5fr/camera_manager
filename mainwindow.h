@@ -37,7 +37,6 @@ private:
     void setListWidget();
     bool open = false;
     QTimer *refreshTimer = new QTimer;
-private slots:
     void openCameraWidget(QListWidgetItem *);
     void refresh();
     void cameraWidgetClosed();

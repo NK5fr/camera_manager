@@ -36,13 +36,11 @@ public:
     INodeMap &getINodeMap();
     std::string getModelName();
     std::string getVendorName();
-    CameraPtr getCamera();
     int getRealFrameRate();
     int getFixedFrameRate();
     int getExposureTime();
     int getGain();
 
-    void setCamera(CameraPtr newCam);
     void setExposureAuto(bool mode);
     void setGainAuto(bool);
 
@@ -52,7 +50,6 @@ public:
     bool isConnected();
     string getSerial();
     int getMaxFps();
-public slots:
     void setExposureTime(int exposure);
     void setGain(int gain);
     void updateFixedFrameRate(int framerate);
