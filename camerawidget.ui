@@ -37,7 +37,7 @@
      <x>30</x>
      <y>440</y>
      <width>740</width>
-     <height>202</height>
+     <height>206</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -118,6 +118,13 @@
        <widget class="QPushButton" name="settingsButton">
         <property name="text">
          <string>Edit Parameters</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="takePicture">
+        <property name="text">
+         <string>Take picture</string>
         </property>
        </widget>
       </item>

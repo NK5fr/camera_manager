@@ -47,6 +47,7 @@ private:
     int fpsCount = 0;
     int zoom = 6;
     QElapsedTimer elapsedTimer;
+    bool shouldTakePicture = false;
 private slots:
     void showSettings();
     void getCameraImage(ImagePtr, int);

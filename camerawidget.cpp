@@ -36,7 +36,10 @@ CameraWidget::CameraWidget(FlirCamera *flircam, QWidget *parent)
     elapsedTimer.start();
     ui->framerate->setText(QString::number(30));
     this->initZoomSlider();
-    connect(ui->zoomInput, SIGNAL(valueChanged(int)), this, SLOT(changeZoom(int)));
+    connect(ui->zoomInput, &QSlider::valueChanged, this, &CameraWidget::changeZoom);
+    connect(ui->zoomInput, &QSlider::sliderPressed, this, &CameraWidget::updateWindowVisibility);
+
+    connect(ui->takePicture, &QPushButton::clicked, this, [this](){shouldTakePicture = true;});
 }
 
 CameraWidget::~CameraWidget()
@@ -70,6 +73,13 @@ void CameraWidget::showSettings()
 
 void CameraWidget::getCameraImage(ImagePtr convertedImage, int count)
 {
+    if(shouldTakePicture){
+        ostringstream filename;
+        filename << "../../images/image" << count << ".png";
+        convertedImage->Save(filename.str().c_str());
+        shouldTakePicture = false;
+    }
+
     QImage image((uchar *) convertedImage->GetData(),
                  convertedImage->GetWidth(),
                  convertedImage->GetHeight(),
