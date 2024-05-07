@@ -85,7 +85,7 @@ void CameraWidget::showSettings()
 
         // Change settings window position
         settings->setGeometry(utils::reCenterWidget((QWidget*) settings, (QWidget*)ui->cameraRendering));
-        settings->setGeometry(utils::offSet((QWidget*) settings, 'r', 1.25*settings->width()));
+        settings->setGeometry(utils::offSet((QWidget*) settings, 'r', settings->width()));
     }
 }
 
