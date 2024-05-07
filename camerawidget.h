@@ -35,6 +35,7 @@ public:
     void closeEvent(QCloseEvent *event);
     void updateWindowVisibility();
     void setButtonEnabled(QPushButton *button, bool mode);
+    void initZoomSlider();
 private:
     Ui::CameraWidget *ui;
     FlirCamera *cam;
@@ -44,6 +45,7 @@ private:
     QTimer *refreshTimer = new QTimer();
     int fpsSum = 0;
     int fpsCount = 0;
+    int zoom = 6;
     QElapsedTimer elapsedTimer;
 private slots:
     void showSettings();
@@ -55,6 +57,7 @@ private slots:
     void showFrameRateController();
     void testCameraStatus();
     void mousePressEvent(QMouseEvent *event);
+    void changeZoom(int zoom);
 signals:
     void widgetClosed();
 };
