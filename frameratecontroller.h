@@ -20,9 +20,9 @@ public:
     explicit FrameRateController(QWidget *parent = nullptr, int maxFpsValue = 30);
     Ui::FrameRateController *ui;
     ~FrameRateController();
+    void updateVisibility();
 signals:
     void fixedFrameRateChanged(int);
-
 private:
 private slots:
     void changeFixedFrameRate(int value);

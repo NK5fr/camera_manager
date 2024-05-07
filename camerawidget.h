@@ -11,6 +11,7 @@
 #include "settingswidget.h"
 
 #include <QElapsedTimer>
+#include <QPushButton>
 #include <QTimer>
 #include <QWidget>
 
@@ -32,7 +33,8 @@ public:
     ~CameraWidget();
 
     void closeEvent(QCloseEvent *event);
-
+    void updateWindowVisibility();
+    void setButtonEnabled(QPushButton *button, bool mode);
 private:
     Ui::CameraWidget *ui;
     FlirCamera *cam;
@@ -52,6 +54,7 @@ private slots:
     void stopExisting();
     void showFrameRateController();
     void testCameraStatus();
+    void mousePressEvent(QMouseEvent *event);
 signals:
     void widgetClosed();
 };

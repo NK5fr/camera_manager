@@ -125,3 +125,9 @@ void SettingsWidget::initGainSlider()
     gainInput->setMinimum(defaultGainMin);
     cam->setGain(defaultGainValue);
 }
+
+void SettingsWidget::updateVisibility() {
+    if (this->isVisible()) {
+        this->hide();
+    }
+}
