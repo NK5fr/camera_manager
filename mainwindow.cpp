@@ -40,7 +40,6 @@ MainWindow::~MainWindow()
 void MainWindow::openCameraWidget(QListWidgetItem * item)
 {
     int idx = ui->cameraList->row(item);
-    cout << flirCamList[idx]->isConnected() << endl;
     if(flirCamList[idx]->isConnected() && !open){
         refreshTimer->stop();
         open = true;
