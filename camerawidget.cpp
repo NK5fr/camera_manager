@@ -12,60 +12,78 @@ CameraWidget::CameraWidget(FlirCamera *flircam, QWidget *parent)
     , cam(flircam)
 {
     ui->setupUi(this);
+
+    // Change Window title and camera info labels
     setWindowTitle("Camera Manager");
     changeCameraInfo();
+
+    // Create settings and frame rate contoller windows
     this->settings = new SettingsWidget(cam, nullptr);
     this->controller = new FrameRateController(nullptr, cam->getMaxFps());
+
+    // Change frame rate button icon, disable stop button (camera is running by default),
+    // Init the zoom slider values and set the frame rate text to the default value (30)
     ui->framerateButton->setIcon(this->style()->standardIcon(QStyle::SP_FileDialogInfoView));
-
-    connect(cam, SIGNAL(streaming(bool)), this, SLOT(changeAcquisition(bool)));
-    connect(cam, SIGNAL(imageRetrieved(ImagePtr, int)), this, SLOT(getCameraImage(ImagePtr, int)));
-    connect(ui->settingsButton, SIGNAL(released()), this, SLOT(showSettings()));
-    connect(ui->startButton, SIGNAL(clicked(bool)), this, SLOT(startAcquisition()));
-    connect(ui->stopButton, SIGNAL(clicked(bool)), this, SLOT(stopAcquisition()));
     this->setButtonEnabled(ui->stopButton, false);
-
-    connect(ui->framerateButton, SIGNAL(clicked(bool)), this, SLOT(showFrameRateController()));
-    connect(controller, SIGNAL(fixedFrameRateChanged(int)), cam, SLOT(updateFixedFrameRate(int)));
-
-    cam->startAquisition();
-
-    connect(refreshTimer, SIGNAL(timeout()), this, SLOT(testCameraStatus()));
-    refreshTimer->start(3000);
-
-    elapsedTimer.start();
-    ui->framerate->setText(QString::number(30));
     this->initZoomSlider();
-    connect(ui->zoomInput, &QSlider::valueChanged, this, &CameraWidget::changeZoom);
+    ui->framerate->setText(QString::number(30));
+
+    // Listen to camera events (acquisition changed and image retrieved)
+    connect(cam, &FlirCamera::streaming, this, &CameraWidget::changeAcquisition);
+    connect(cam, &FlirCamera::imageRetrieved, this, &CameraWidget::getCameraImage);
+
+    // Listen to buttons click event
+    connect(ui->settingsButton, &QPushButton::released, this, &CameraWidget::showSettings);
+    connect(ui->startButton, &QPushButton::clicked, this, &CameraWidget::startAcquisition);
+    connect(ui->stopButton, &QPushButton::clicked, this, &CameraWidget::stopAcquisition);
+    connect(ui->framerateButton, &QPushButton::clicked, this, &CameraWidget::showFrameRateController);
+    connect(ui->takePicture, &QPushButton::clicked, this, [this](){shouldTakePicture = true;});
+
+    // Listen to frame rate controller frame rate changed event
+    connect(controller, &FrameRateController::fixedFrameRateChanged, cam, &FlirCamera::updateFixedFrameRate);
+
+    // Listen to refresh timer event
+    connect(refreshTimer, &QTimer::timeout, this, &CameraWidget::testCameraStatus);
+
+    // Listen to the slider events
+    connect(ui->zoomInput, &QSlider::valueChanged, this, [this](int value){zoom = value;});
     connect(ui->zoomInput, &QSlider::sliderPressed, this, &CameraWidget::updateWindowVisibility);
 
-    connect(ui->takePicture, &QPushButton::clicked, this, [this](){shouldTakePicture = true;});
+    // Start the refresh timer,the camera and the elapsed timer
+    refreshTimer->start(3000);
+    cam->startAquisition();
+    elapsedTimer.start();
 }
 
 CameraWidget::~CameraWidget()
 {
     qInfo() << "destroyed camera widget";
+    // Stop camera if is running
     if (cam->isSteaming()) {
         cam->stopAquisition();
     }
     delete ui;
 }
 
+// Set name and vendor name
 void CameraWidget::changeCameraInfo()
 {
     ui->name->setText(QString::fromStdString(cam->getModelName() + " " + cam->getSerial()));
     ui->serial->setText(QString::fromStdString(cam->getVendorName()));
 }
 
+// Show the settings window
 void CameraWidget::showSettings()
 {
-    updateWindowVisibility();
-    if (!cam->isConnected()) {
+    updateWindowVisibility(); // Close settings and frame rate controller windows if open
+    if (!cam->isConnected()) { // Check if the camera is still connected
         close();
-    } else if (settings->isVisible()) {
+    } else if (settings->isVisible()) { // Close the settings window if it's opened
         settings->hide();
-    } else {
+    } else { // Open the settings window
         settings->show();
+
+        // Change settings window position
         settings->setGeometry(utils::reCenterWidget((QWidget*) settings, (QWidget*)ui->cameraRendering));
         settings->setGeometry(utils::offSet((QWidget*) settings, 'r', 1.25*settings->width()));
     }
@@ -73,6 +91,7 @@ void CameraWidget::showSettings()
 
 void CameraWidget::getCameraImage(ImagePtr convertedImage, int count)
 {
+    // Take a picture if asked
     if(shouldTakePicture){
         ostringstream filename;
         filename << "../../images/image" << count << ".png";
@@ -80,6 +99,7 @@ void CameraWidget::getCameraImage(ImagePtr convertedImage, int count)
         shouldTakePicture = false;
     }
 
+    // Init and display image in a label
     QImage image((uchar *) convertedImage->GetData(),
                  convertedImage->GetWidth(),
                  convertedImage->GetHeight(),
@@ -88,41 +108,43 @@ void CameraWidget::getCameraImage(ImagePtr convertedImage, int count)
     ui->cameraRendering->setPixmap(QPixmap::fromImage(
         image.scaled(QSize(100*this->zoom,66*this->zoom), Qt::KeepAspectRatio, Qt::SmoothTransformation)));
 
-    //ui->cameraRendering->setText(QString::number(count));
-
-    int elapsed = elapsedTimer.elapsed();
+    // Calculate the frame rate from the average recuperation time of each image
+    int elapsed = elapsedTimer.elapsed(); // check the recuperation time of one image
     fpsSum += 1000 / elapsed;
     ++fpsCount;
-    if (fpsCount >= cam->getFixedFrameRate()) {
+    if (fpsCount >= cam->getFixedFrameRate()) { // Change the frame rate text if the number of taken pictures is equal to the fixed frame rate
         ui->framerate->setText(QString::number(fpsSum / fpsCount));
         fpsSum = 0;
         fpsCount = 0;
     }
-    elapsedTimer.restart();
+    elapsedTimer.restart(); // restart to calculate the next recuperation time
 }
 
+// Start the camera
 void CameraWidget::startAcquisition()
 {
-    updateWindowVisibility();
-    if (!cam->isConnected()) {
+    updateWindowVisibility(); // Close settings and frame rate controller windows if open
+    if (!cam->isConnected()) { // Check if the camera is still connected
         close();
     } else{
-        ui->framerate->setText(QString::number(cam->getFixedFrameRate()));
+        ui->framerate->setText(QString::number(cam->getFixedFrameRate())); // Reinit the frame rate text
         cam->startAquisition();
     }
 }
 
+// Stop camera
 void CameraWidget::stopAcquisition()
 {
-    updateWindowVisibility();
-    if (!cam->isConnected()) {
+    updateWindowVisibility(); // Close settings and frame rate controller windows if open
+    if (!cam->isConnected()) { // Check if the camera is still connected
         close();
     } else {
-        ui->framerate->setText(QString::number(0));
+        ui->framerate->setText(QString::number(0)); // Change the frame rate text to zero
         cam->stopAquisition();
     }
 }
 
+// Switch acquisition
 void CameraWidget::changeAcquisition(bool mode)
 {
     this->setButtonEnabled(ui->startButton, mode);
@@ -131,6 +153,7 @@ void CameraWidget::changeAcquisition(bool mode)
     ui->stopButton->setEnabled(mode);
 }
 
+// Delete all the elements contained in the current window
 void CameraWidget::stopExisting()
 {
     refreshTimer->stop();
@@ -145,17 +168,20 @@ void CameraWidget::stopExisting()
 
 void CameraWidget::showFrameRateController()
 {
-    updateWindowVisibility();
-    if (!cam->isConnected()) {
+    updateWindowVisibility(); // Close settings and frame rate controller windows if open
+    if (!cam->isConnected()) { // Check if the camera is still connected
         close();
-    } else if (this->controller->isVisible()) {
+    } else if (this->controller->isVisible()) { // Close the frame rate controller window if it's opened
         this->controller->hide();
-    } else {
+    } else { // Open the frame rate controller window
         this->controller->show();
+
+        // Change frame rate controller window position
         controller->setGeometry(utils::reCenterWidget((QWidget*) controller, (QWidget*) ui->framerateButton));
     }
 }
 
+// Catch window closing and delete all elements
 void CameraWidget::closeEvent(QCloseEvent *event)
 {
     qInfo() << "close event camera widget";
@@ -163,6 +189,7 @@ void CameraWidget::closeEvent(QCloseEvent *event)
     this->stopExisting();
 }
 
+// Check if the camera is still connected
 void CameraWidget::testCameraStatus()
 {
     if (!cam->isConnected()) {
@@ -170,26 +197,25 @@ void CameraWidget::testCameraStatus()
     }
 }
 
+// Catch click event to close settings and frame rate controller windows if open
 void CameraWidget::mousePressEvent(QMouseEvent *event)
 {
     updateWindowVisibility();
 }
 
-void CameraWidget::changeZoom(int zoom)
-{
-    this->zoom = zoom;
-}
-
+// Close settings and frame rate controller windows if open
 void CameraWidget::updateWindowVisibility() {
     controller->updateVisibility();
     settings->updateVisibility();
 }
 
+// Enable or disable buttons
 void CameraWidget::setButtonEnabled(QPushButton *button, bool mode) {
     button->setEnabled(mode);
     button->setAttribute(Qt::WA_TransparentForMouseEvents, mode);
 }
 
+// Init zoom slider values
 void CameraWidget::initZoomSlider() {
     ui->zoomInput->setMaximum(15);
     ui->zoomInput->setMinimum(1);

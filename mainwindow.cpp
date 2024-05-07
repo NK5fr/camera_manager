@@ -12,16 +12,20 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    // Check number of devices found
     string devicesNumber = "Devices found: " + std::to_string(camList.GetSize());
     ui->devicesNumber->setText(QString::fromStdString(devicesNumber));
 
+    // Init all cameras found in a camera list
     for(int i = 0; i < camList.GetSize(); ++i){
         flirCamList.push_back(new FlirCamera(camList.GetByIndex(i)));
     }
+
+    // Init the list widget with found cameras
     setListWidget();
 
-    connect(ui->cameraList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(openCameraWidget(QListWidgetItem*)));
-    connect(ui->refresh, SIGNAL(clicked()), this, SLOT(refresh()));
+    connect(ui->cameraList, &QListWidget::itemClicked, this, &MainWindow::openCameraWidget);
+    connect(ui->refresh, &QPushButton::clicked, this, &MainWindow::refresh);
 
     connect(refreshTimer, SIGNAL(timeout()), this, SLOT(refresh()));
     refreshTimer->start(3000);
