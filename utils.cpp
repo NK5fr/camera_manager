@@ -29,8 +29,6 @@ QRect utils::reCenter(int width, int height, QScreen *screen)
 
 QRect utils::reCenterOffSet(QWidget *toCenter, QScreen *screen, char direction, int offset)
 {
-    qInfo() << toCenter->width();
-    qInfo() << toCenter->height();
     QPoint screenCenter = screen->geometry().center();
     switch (direction) {
     case 'b':
@@ -61,8 +59,6 @@ QRect utils::center(QRect toCenter, QRect rect)
 
 QRect utils::centerOnPoint(QRect toCenter, QPoint point)
 {
-    qInfo() << toCenter.width();
-    qInfo() << toCenter.height();
     toCenter.moveCenter(point);
     return toCenter;
 }

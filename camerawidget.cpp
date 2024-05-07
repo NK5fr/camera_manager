@@ -16,11 +16,6 @@ CameraWidget::CameraWidget(FlirCamera *flircam, QWidget *parent)
     changeCameraInfo();
     this->settings = new SettingsWidget(cam, nullptr);
     this->controller = new FrameRateController(nullptr);
-
-    //settings->setGeometry(utils::centerOnPoint(settings->geometry(), QPoint(649,649)));
-    //qInfo() << this->geometry();
-    //settings->setGeometry(utils::centerOnPoint(settings->geometry(), QPoint(500,100)));
-
     ui->framerateButton->setIcon(this->style()->standardIcon(QStyle::SP_FileDialogInfoView));
 
     connect(cam, SIGNAL(streaming(bool)), this, SLOT(changeAcquisition(bool)));
@@ -28,8 +23,7 @@ CameraWidget::CameraWidget(FlirCamera *flircam, QWidget *parent)
     connect(ui->settingsButton, SIGNAL(released()), this, SLOT(showSettings()));
     connect(ui->startButton, SIGNAL(clicked(bool)), this, SLOT(startAcquisition()));
     connect(ui->stopButton, SIGNAL(clicked(bool)), this, SLOT(stopAcquisition()));
-
-    ui->stopButton->setEnabled(false);
+    this->setButtonEnabled(ui->stopButton, false);
 
     connect(ui->framerateButton, SIGNAL(clicked(bool)), this, SLOT(showFrameRateController()));
     connect(controller, SIGNAL(fixedFrameRateChanged(int)), cam, SLOT(updateFixedFrameRate(int)));
@@ -60,17 +54,15 @@ void CameraWidget::changeCameraInfo()
 
 void CameraWidget::showSettings()
 {
+    updateWindowVisibility();
     if (!cam->isConnected()) {
         close();
     } else if (settings->isVisible()) {
         settings->hide();
     } else {
         settings->show();
-        qInfo() << settings->width();
-        qInfo() << settings->height();
-        //settings->setGeometry(utils::reCenterOffSet((QWidget*) settings, QApplication::primaryScreen(), 'r', (this->width())));
         settings->setGeometry(utils::reCenterWidget((QWidget*) settings, (QWidget*)ui->cameraRendering));
-        settings->setGeometry(utils::offSet((QWidget*) settings, 'r', 3*this->width()/4));
+        settings->setGeometry(utils::offSet((QWidget*) settings, 'r', 1.25*settings->width()));
     }
 }
 
@@ -98,6 +90,7 @@ void CameraWidget::getCameraImage(ImagePtr convertedImage, int count)
 
 void CameraWidget::startAcquisition()
 {
+    updateWindowVisibility();
     if (!cam->isConnected()) {
         close();
     } else{
@@ -108,6 +101,7 @@ void CameraWidget::startAcquisition()
 
 void CameraWidget::stopAcquisition()
 {
+    updateWindowVisibility();
     if (!cam->isConnected()) {
         close();
     } else {
@@ -118,6 +112,8 @@ void CameraWidget::stopAcquisition()
 
 void CameraWidget::changeAcquisition(bool mode)
 {
+    this->setButtonEnabled(ui->startButton, mode);
+    this->setButtonEnabled(ui->stopButton, !mode);
     ui->startButton->setEnabled(!mode);
     ui->stopButton->setEnabled(mode);
 }
@@ -136,6 +132,7 @@ void CameraWidget::stopExisting()
 
 void CameraWidget::showFrameRateController()
 {
+    updateWindowVisibility();
     if (!cam->isConnected()) {
         close();
     } else if (this->controller->isVisible()) {
@@ -158,4 +155,19 @@ void CameraWidget::testCameraStatus()
     if (!cam->isConnected()) {
         close();
     }
+}
+
+void CameraWidget::mousePressEvent(QMouseEvent *event)
+{
+    updateWindowVisibility();
+}
+
+void CameraWidget::updateWindowVisibility() {
+    controller->updateVisibility();
+    settings->updateVisibility();
+}
+
+void CameraWidget::setButtonEnabled(QPushButton *button, bool mode) {
+    button->setEnabled(mode);
+    button->setAttribute(Qt::WA_TransparentForMouseEvents, mode);
 }

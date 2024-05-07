@@ -32,3 +32,9 @@ void FrameRateController::changeFixedFrameRate(int value)
 {
     emit fixedFrameRateChanged(value);
 }
+
+void FrameRateController::updateVisibility() {
+    if (this->isVisible()) {
+        this->hide();
+    }
+}

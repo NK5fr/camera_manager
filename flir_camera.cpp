@@ -44,7 +44,6 @@ void FlirCamera::setGain(int gain)
 
 void FlirCamera::updateFixedFrameRate(int framerate)
 {
-    qInfo() << "setFrameRate";
     cam->AcquisitionFrameRate.SetValue(framerate);
     qInfo() << cam->AcquisitionFrameRate.GetValue();
 }

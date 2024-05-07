@@ -28,6 +28,7 @@ public:
     int defaultGainMin = 1;
     void initTrigger();
     void initTriggerMode();
+    void updateVisibility();
 private:
     Ui::SettingsWidget *ui;
     FlirCamera *cam;
