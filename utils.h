@@ -3,6 +3,9 @@
 
 #include <QRect>
 #include <QScreen>
+#include <iostream>
+#include <ctime>
+
 
 namespace utils {
     QRect reCenter(QWidget *toCenter, QScreen *screen);
@@ -13,6 +16,7 @@ namespace utils {
     QRect centerOnPoint(QRect toCenter, QPoint point);
     QRect offSet(QWidget *toOffset, char direction, int offset);
     int showError(std::string text);
+    std::string getTime();
 }
 
 #endif // UTILS_H

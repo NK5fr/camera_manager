@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>406</height>
+    <height>446</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -31,7 +31,7 @@
      <x>10</x>
      <y>8</y>
      <width>380</width>
-     <height>383</height>
+     <height>402</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout">
@@ -255,6 +255,13 @@
        </widget>
       </item>
      </layout>
+    </item>
+    <item row="15" column="0" colspan="2">
+     <widget class="QPushButton" name="imageButton">
+      <property name="text">
+       <string>Change image path</string>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>

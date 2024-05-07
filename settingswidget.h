@@ -6,7 +6,7 @@
 #include <QWidget>
 #include <iostream>
 #include <sstream>
-
+#include <string.h>
 using namespace std;
 
 namespace Ui {
@@ -29,16 +29,18 @@ public:
     void initTrigger();
     void initTriggerMode();
     void updateVisibility();
+    void showFileDialog();
 private:
     Ui::SettingsWidget *ui;
     FlirCamera *cam;
-private slots:
     void setMaxExpoSliderWidth();
     void setExposureMode(Qt::CheckState state);
     void setMinExpoSliderWidth();
     void setMinGainSliderWidth();
     void setMaxGainSliderWidth();
     void setGainMode(Qt::CheckState state);
+signals:
+    void fileNameChanged(QString filePath);
 };
 
 #endif // SETTINGSWIDGET_H

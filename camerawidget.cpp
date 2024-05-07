@@ -5,6 +5,8 @@
 #include "qstyle.h"
 #include "ui_camerawidget.h"
 #include "utils.h"
+#include <iostream>
+#include <ctime>
 
 CameraWidget::CameraWidget(FlirCamera *flircam, QWidget *parent)
     : QWidget(parent)
@@ -40,6 +42,10 @@ CameraWidget::CameraWidget(FlirCamera *flircam, QWidget *parent)
     connect(ui->zoomInput, &QSlider::sliderPressed, this, &CameraWidget::updateWindowVisibility);
 
     connect(ui->takePicture, &QPushButton::clicked, this, [this](){shouldTakePicture = true;});
+    connect(settings, &SettingsWidget::fileNameChanged, this, [this](QString file){
+        file.append("/");
+        this->filePath = file.toStdString();
+    });
 }
 
 CameraWidget::~CameraWidget()
@@ -74,10 +80,15 @@ void CameraWidget::showSettings()
 void CameraWidget::getCameraImage(ImagePtr convertedImage, int count)
 {
     if(shouldTakePicture){
-        ostringstream filename;
-        filename << "../../images/image" << count << ".png";
-        convertedImage->Save(filename.str().c_str());
         shouldTakePicture = false;
+        ostringstream filename;
+        qInfo() << utils::getTime();
+        filename << this->filePath << utils::getTime() << "-" << count << ".png";
+        try {
+            convertedImage->Save(filename.str().c_str());
+        } catch(Spinnaker::Exception exception) {
+            utils::showError("Could not save image to folder, try changing the folder!");
+        }
     }
 
     QImage image((uchar *) convertedImage->GetData(),

@@ -4,6 +4,7 @@
 #include "linkedslider.h"
 #include "ui_settingswidget.h"
 #include "utils.h"
+#include <QFileDialog>
 
 SettingsWidget::SettingsWidget(FlirCamera *camera, QWidget *parent)
     : QWidget(parent)
@@ -12,30 +13,34 @@ SettingsWidget::SettingsWidget(FlirCamera *camera, QWidget *parent)
 {
     ui->setupUi(this);
     this->setWindowTitle("Settings");
+    // Linking every input widget with their respective labels
+
+    // For the Exposure
     LinkedLineEdit *linkedMaxExposure = new LinkedLineEdit(nullptr, ui->maxExposureValue, ui->maxExposureInput); linkedMaxExposure->setParent(this);
     LinkedLineEdit *linkedMinExposure = new LinkedLineEdit(nullptr, ui->minExposureValue, ui->minExposureInput); linkedMinExposure->setParent(this);
     LinkedSlider *linkedExposure = new LinkedSlider(nullptr, ui->exposureValue, ui->exposureInput); linkedExposure->setParent(this);
 
+    // For the Gain
     LinkedLineEdit *linkedMaxGain = new LinkedLineEdit(nullptr, ui->maxGainValue, ui->maxGainInput); linkedMaxGain->setParent(this);
     LinkedLineEdit *linkedMinGain = new LinkedLineEdit(nullptr, ui->minGainValue, ui->minGainInput); linkedMinGain->setParent(this);
     LinkedSlider *linkedGain = new LinkedSlider(nullptr, ui->gainValue, ui->exposureInput_2); linkedGain->setParent(this);
 
-
+    // For the Triggers
     LinkedComboBox *linkedTrigger = new LinkedComboBox(nullptr, ui->triggerValue, ui->triggerInput); linkedTrigger->setParent(this);
     LinkedComboBox *linkedTriggerMode = new LinkedComboBox(nullptr, ui->triggerModeValue, ui->triggerModeInput); linkedTriggerMode->setParent(this);
 
+    // Connecting the values
+    QObject::connect(ui->maxExposureInput, &QLineEdit::returnPressed, this, &SettingsWidget::setMaxExpoSliderWidth);
+    QObject::connect(ui->minExposureInput, &QLineEdit::returnPressed, this, &SettingsWidget::setMinExpoSliderWidth);
+    QObject::connect(ui->exposureInput, &QSlider::sliderMoved, cam, &FlirCamera::setExposureTime);
+    QObject::connect(cam, &FlirCamera::exposureTimeChanged, ui->exposureInput, &QSlider::setValue);
+    QObject::connect(ui->autoExposureInput, &QCheckBox::checkStateChanged, this, &SettingsWidget::setExposureMode);
 
-    QObject::connect(ui->maxExposureInput, SIGNAL(returnPressed()), this, SLOT(setMaxExpoSliderWidth()));
-    QObject::connect(ui->minExposureInput, SIGNAL(returnPressed()), this, SLOT(setMinExpoSliderWidth()));
-    QObject::connect(ui->exposureInput, SIGNAL(sliderMoved(int)), cam, SLOT(setExposureTime(int)));
-    QObject::connect(cam, SIGNAL(exposureTimeChanged(int)), ui->exposureInput, SLOT(setValue(int)));
-    QObject::connect(ui->autoExposureInput, SIGNAL(checkStateChanged(Qt::CheckState)), this, SLOT(setExposureMode(Qt::CheckState)));
-
-    QObject::connect(ui->maxGainInput, SIGNAL(returnPressed()), this, SLOT(setMaxGainSliderWidth()));
-    QObject::connect(ui->minGainInput, SIGNAL(returnPressed()), this, SLOT(setMinGainSliderWidth()));
-    QObject::connect(cam, SIGNAL(gainChanged(int)), ui->exposureInput_2, SLOT(setValue(int)));
-    QObject::connect(ui->exposureInput_2, SIGNAL(sliderMoved(int)), cam, SLOT(setGain(int)));
-    QObject::connect(ui->autoGainInput, SIGNAL(checkStateChanged(Qt::CheckState)), this, SLOT(setGainMode(Qt::CheckState)));
+    QObject::connect(ui->maxGainInput, &QLineEdit::returnPressed, this, &SettingsWidget::setMaxGainSliderWidth);
+    QObject::connect(ui->minGainInput, &QLineEdit::returnPressed, this, &SettingsWidget::setMinGainSliderWidth);
+    QObject::connect(cam, &FlirCamera::gainChanged, ui->exposureInput_2, &QSlider::setValue);
+    QObject::connect(ui->exposureInput_2, &QSlider::sliderMoved, cam, &FlirCamera::setGain);
+    QObject::connect(ui->autoGainInput, &QCheckBox::checkStateChanged, this, &SettingsWidget::setGainMode);
 
     ui->autoExposureInput->setChecked(cam->isExposureAuto());
     ui->maxExposureInput->setText(QString::number(defaultExpoMax));
@@ -47,12 +52,16 @@ SettingsWidget::SettingsWidget(FlirCamera *camera, QWidget *parent)
     ui->minGainInput->setText(QString::number(defaultGainMin));
     initGainSlider();
 
-    QObject::connect(ui->triggerInput, SIGNAL(currentTextChanged(QString)), cam, SLOT(setTrigger(QString)));
-    QObject::connect(cam, SIGNAL(triggerChange(QString)), ui->triggerInput, SLOT(setCurrentText(QString)));
+    QObject::connect(ui->triggerInput, &QComboBox::currentTextChanged, cam, &FlirCamera::setTrigger);
+    QObject::connect(cam, &FlirCamera::triggerChange, ui->triggerInput, &QComboBox::setCurrentText);
 
-    QObject::connect(ui->triggerModeInput, SIGNAL(currentTextChanged(QString)), cam, SLOT(setTriggerMode(QString)));
-    QObject::connect(cam, SIGNAL(triggerModeChange(QString)), ui->triggerModeInput, SLOT(setCurrentText(QString)));
-
+    QObject::connect(ui->triggerModeInput, &QComboBox::currentTextChanged, cam, &FlirCamera::setTriggerMode);
+    QObject::connect(cam, &FlirCamera::triggerModeChange, ui->triggerModeInput, &QComboBox::setCurrentText);
+    QObject::connect(ui->imageButton, &QPushButton::clicked, [this](){
+        QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "/home", QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+        qInfo() << dir;
+        emit fileNameChanged(dir);
+    });
     initTrigger();
     initTriggerMode();
 }
@@ -62,25 +71,28 @@ SettingsWidget::~SettingsWidget()
     delete ui;
 }
 
+// Sets the maximum value for the exposure slider to the value of maxExposureInput
 void SettingsWidget::setMaxExpoSliderWidth() {
     QString value = ui->maxExposureInput->text();
     int intValue = value.toInt();
     ui->exposureInput->setMaximum(intValue);
 }
 
+// Changes the actual ExposureMode of the camera
 void SettingsWidget::setExposureMode(Qt::CheckState state) {
     bool isAuto = (state == Qt::Checked);
     ui->exposureInput->setEnabled(!isAuto);
     cam->setExposureAuto(isAuto);
 }
 
+// Sets the minimum value of the exposure slider to the value of minExposureInput
 void SettingsWidget::setMinExpoSliderWidth() {
     QString value = ui->minExposureInput->text();
     int intValue = value.toInt();
     ui->exposureInput->setMinimum(intValue);
 }
 
-
+// Initializes the exposure slider so that it has the right limits
 void SettingsWidget::initExposureSlider() {
     int defaultExposureValue = cam->getExposureTime();
     QSlider *exposureInput = ui->exposureInput;
@@ -89,34 +101,40 @@ void SettingsWidget::initExposureSlider() {
     cam->setExposureTime(defaultExposureValue);
 }
 
+// Sets the actual gainMode of the camera to the chosen state in the checkbox
 void SettingsWidget::setGainMode(Qt::CheckState state) {
     bool isAuto = (state == Qt::Checked);
     ui->exposureInput_2->setEnabled(!isAuto);
     cam->setGainAuto(isAuto);
 }
 
+// Initializes the trigger combobox with values
 void SettingsWidget::initTrigger(){
     ui->triggerInput->addItem("software");
     ui->triggerInput->addItem("line0");
 }
 
+// Initializes the triggermode combobox with values
 void SettingsWidget::initTriggerMode(){
     ui->triggerModeInput->addItem("off");
     ui->triggerModeInput->addItem("on");
 }
 
+// Sets the maximum value of the gain slider according to maxGainInput
 void SettingsWidget::setMaxGainSliderWidth() {
     QString value = ui->maxGainInput->text();
     int intValue = value.toInt();
     ui->exposureInput_2->setMaximum(intValue);
 }
 
+// Sets the minimum value of the gain slider according to minGainInput
 void SettingsWidget::setMinGainSliderWidth() {
     QString value = ui->minGainInput->text();
     int intValue = value.toInt();
     ui->exposureInput_2->setMinimum(intValue);
 }
 
+// Initializes the default values of the gain slider
 void SettingsWidget::initGainSlider()
 {
     int defaultGainValue = cam->getGain();
@@ -126,6 +144,7 @@ void SettingsWidget::initGainSlider()
     cam->setGain(defaultGainValue);
 }
 
+// Method to hide the settings page if its possible, used to ensure that it disseapears when you click on something else in the main window
 void SettingsWidget::updateVisibility() {
     if (this->isVisible()) {
         this->hide();

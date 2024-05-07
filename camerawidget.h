@@ -46,6 +46,7 @@ private:
     int fpsSum = 0;
     int fpsCount = 0;
     int zoom = 6;
+    std::string filePath = "../../images";
     QElapsedTimer elapsedTimer;
     bool shouldTakePicture = false;
 private slots:

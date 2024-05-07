@@ -5,7 +5,11 @@
 #include <qgridlayout.h>
 #include <qlabel.h>
 #include <qmessagebox.h>
+#include <qdatetime.h>
+#include <string>
+#include <iostream>
 
+// Shorthand to show a messageBox when there's an error
 int utils::showError(std::string text)
 {
     return QMessageBox(QMessageBox::NoIcon,
@@ -15,11 +19,13 @@ int utils::showError(std::string text)
         .exec();
 }
 
+// Centers a Widget on a given screen
 QRect utils::reCenter(QWidget* toCenter, QScreen *screen)
 {
     return utils::centerOnPoint(toCenter->geometry(), screen->geometry().center());
 }
 
+// Creates and returns a rectangle that is then centered on a given screen
 QRect utils::reCenter(int width, int height, QScreen *screen)
 {
     QRect rect = QRect(0,0,width, height);
@@ -27,6 +33,7 @@ QRect utils::reCenter(int width, int height, QScreen *screen)
     return rect;
 }
 
+// Centers a widget on a given screen and then adds an offset to it
 QRect utils::reCenterOffSet(QWidget *toCenter, QScreen *screen, char direction, int offset)
 {
     QPoint screenCenter = screen->geometry().center();
@@ -46,17 +53,19 @@ QRect utils::reCenterOffSet(QWidget *toCenter, QScreen *screen, char direction, 
     }
     return utils::centerOnPoint(toCenter->geometry(), screenCenter);
 }
-
+// Centers a widget to another widget
 QRect utils::reCenterWidget(QWidget *toCenter, QWidget *widget)
 {
     return utils::centerOnPoint(toCenter->geometry(), widget->mapToGlobal(widget->frameGeometry().center()));
 }
 
+// Centers a QRect on to another QRect
 QRect utils::center(QRect toCenter, QRect rect)
 {
     return utils::centerOnPoint(toCenter, rect.center());
 }
 
+// Moves the center of a QRect to a given point, used to center everything
 QRect utils::centerOnPoint(QRect toCenter, QPoint point)
 {
     toCenter.moveCenter(point);
@@ -81,4 +90,17 @@ QRect utils::offSet(QWidget *toOffset, char direction, int offset)
         break;
     }
     return utils::centerOnPoint(toOffset->geometry(), offsetPoint);
+}
+
+std::string utils::getTime()
+{
+    QDateTime time = QDateTime::currentDateTime();
+    std::string stringTime = time.toString().toStdString();
+    for(int i = 0; i < stringTime.length(); i++)
+    {
+        if(stringTime[i] == ' ' | stringTime[i] == ':')
+            stringTime[i] = '-';
+    }
+    qInfo() << stringTime;
+    return stringTime;
 }

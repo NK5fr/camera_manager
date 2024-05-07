@@ -12,7 +12,6 @@ public:
                           QSlider *input = nullptr,
                           std::string stringTitle = "");
     QSlider *input;
-public slots:
     void changeLabel();
 };
 

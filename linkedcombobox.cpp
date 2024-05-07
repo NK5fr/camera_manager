@@ -10,10 +10,12 @@ LinkedComboBox::LinkedComboBox(QObject *parent,
     this->label = label;
     this->input = input;
     this->title = QString::fromStdString(stringTitle);
-    QObject::connect(input, SIGNAL(currentIndexChanged(int)), this, SLOT(changeLabel()));
+    QObject::connect(input, &QComboBox::currentIndexChanged, this, &LinkedComboBox::changeLabel);
+    // Ensures that changeLabel is called right after the constructor is done executing, so that you have the default value
     QTimer::singleShot(0, this, &LinkedComboBox::changeLabel);
 }
 
+// This method changed the linked label's value to the new ComboBox value
 void LinkedComboBox::changeLabel()
 {
     QString newText = QString("");

@@ -11,10 +11,12 @@ LinkedLineEdit::LinkedLineEdit(QObject *parent,
     this->label = label;
     this->input = input;
     this->title = QString::fromStdString(stringTitle);
-    QObject::connect(input, SIGNAL(returnPressed()), this, SLOT(changeLabel()));
+    QObject::connect(input, &QLineEdit::returnPressed, this, &LinkedLineEdit::changeLabel);
+    // Ensures that changeLabel is called right after the constructor is done executing, so that you have the default value
     QTimer::singleShot(0, this, &LinkedLineEdit::changeLabel);
 }
 
+// This method changed the linked label's value to the new ComboBox value
 void LinkedLineEdit::changeLabel()
 {
     QString value = input->text();

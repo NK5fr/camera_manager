@@ -11,7 +11,6 @@ public:
     virtual ~ILinked() {}
     QLabel *label;
     QString title;
-public slots:
     virtual void changeLabel() {}
 };
 #endif // ILINKED_H

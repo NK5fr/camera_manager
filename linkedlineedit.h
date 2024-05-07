@@ -12,8 +12,6 @@ public:
                             QLineEdit *input = nullptr,
                             std::string stringTitle = "");
     QLineEdit *input;
-    ~LinkedLineEdit() {}
-public slots:
     void changeLabel();
 };
 

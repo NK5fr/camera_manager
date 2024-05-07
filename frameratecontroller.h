@@ -23,9 +23,6 @@ public:
     void updateVisibility();
 signals:
     void fixedFrameRateChanged(int);
-private:
-private slots:
-    void changeFixedFrameRate(int value);
 };
 
 #endif // FRAMERATECONTROLLER_H

@@ -13,7 +13,6 @@ public:
                    QComboBox *input = nullptr,
                    std::string stringTitle = "");
     QComboBox *input;
-public slots:
     void changeLabel();
 };
 
