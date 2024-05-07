@@ -51,6 +51,7 @@ public:
     bool isSteaming();
     bool isConnected();
     string getSerial();
+    int getMaxFps();
 public slots:
     void setExposureTime(int exposure);
     void setGain(int gain);

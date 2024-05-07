@@ -3,13 +3,17 @@
 #include "ui_frameratecontroller.h"
 #include "utils.h"
 
-FrameRateController::FrameRateController(QWidget *parent)
+FrameRateController::FrameRateController(QWidget *parent, int maxFpsValue)
     : QWidget(parent)
     , ui(new Ui::FrameRateController)
 {
     ui->setupUi(this);
     ui->frameRateInput->setMinimum(1);
-    ui->frameRateInput->setMaximum(60);
+    if(maxFpsValue > 60){
+        ui->frameRateInput->setMaximum(60);
+    }else{
+        ui->frameRateInput->setMaximum(maxFpsValue);
+    }
     ui->frameRateInput->setValue(30);
     LinkedSlider *linkedFrameRate = new LinkedSlider(nullptr,
                                                      ui->frameRateValue,

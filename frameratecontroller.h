@@ -17,7 +17,7 @@ class FrameRateController : public QWidget
     Q_OBJECT
 
 public:
-    explicit FrameRateController(QWidget *parent = nullptr);
+    explicit FrameRateController(QWidget *parent = nullptr, int maxFpsValue = 30);
     Ui::FrameRateController *ui;
     ~FrameRateController();
 signals:

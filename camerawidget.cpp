@@ -15,7 +15,7 @@ CameraWidget::CameraWidget(FlirCamera *flircam, QWidget *parent)
     setWindowTitle("Camera Manager");
     changeCameraInfo();
     this->settings = new SettingsWidget(cam, nullptr);
-    this->controller = new FrameRateController(nullptr);
+    this->controller = new FrameRateController(nullptr, cam->getMaxFps());
 
     //settings->setGeometry(utils::centerOnPoint(settings->geometry(), QPoint(649,649)));
     //qInfo() << this->geometry();
@@ -84,6 +84,8 @@ void CameraWidget::getCameraImage(ImagePtr convertedImage, int count)
                  QImage::Format_BGR888);
     ui->cameraRendering->setPixmap(QPixmap::fromImage(
         image.scaled(ui->cameraRendering->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation)));
+
+    //ui->cameraRendering->setText(QString::number(count));
 
     int elapsed = elapsedTimer.elapsed();
     fpsSum += 1000 / elapsed;

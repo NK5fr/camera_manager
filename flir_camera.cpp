@@ -173,3 +173,12 @@ void FlirCamera::setTriggerMode(QString v){
     emit triggerModeChange(v);
 }
 
+int FlirCamera::getMaxFps(){
+    int oldValue = cam->AcquisitionFrameRate.GetValue();
+    cam->AcquisitionFrameRateEnable.SetValue(false);
+    int value = cam->AcquisitionFrameRate.GetValue();
+    cam->AcquisitionFrameRateEnable.SetValue(true);
+    cam->AcquisitionFrameRate.SetValue(oldValue);
+    return value;
+}
+
