@@ -35,6 +35,8 @@ CameraWidget::CameraWidget(FlirCamera *flircam, QWidget *parent)
 
     elapsedTimer.start();
     ui->framerate->setText(QString::number(30));
+    this->initZoomSlider();
+    connect(ui->zoomInput, SIGNAL(valueChanged(int)), this, SLOT(changeZoom(int)));
 }
 
 CameraWidget::~CameraWidget()
@@ -68,14 +70,13 @@ void CameraWidget::showSettings()
 
 void CameraWidget::getCameraImage(ImagePtr convertedImage, int count)
 {
-    //cout << count << endl;
     QImage image((uchar *) convertedImage->GetData(),
                  convertedImage->GetWidth(),
                  convertedImage->GetHeight(),
                  convertedImage->GetStride(),
                  QImage::Format_BGR888);
     ui->cameraRendering->setPixmap(QPixmap::fromImage(
-        image.scaled(ui->cameraRendering->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation)));
+        image.scaled(QSize(100*this->zoom,66*this->zoom), Qt::KeepAspectRatio, Qt::SmoothTransformation)));
 
     //ui->cameraRendering->setText(QString::number(count));
 
@@ -164,6 +165,11 @@ void CameraWidget::mousePressEvent(QMouseEvent *event)
     updateWindowVisibility();
 }
 
+void CameraWidget::changeZoom(int zoom)
+{
+    this->zoom = zoom;
+}
+
 void CameraWidget::updateWindowVisibility() {
     controller->updateVisibility();
     settings->updateVisibility();
@@ -172,4 +178,10 @@ void CameraWidget::updateWindowVisibility() {
 void CameraWidget::setButtonEnabled(QPushButton *button, bool mode) {
     button->setEnabled(mode);
     button->setAttribute(Qt::WA_TransparentForMouseEvents, mode);
+}
+
+void CameraWidget::initZoomSlider() {
+    ui->zoomInput->setMaximum(15);
+    ui->zoomInput->setMinimum(1);
+    ui->zoomInput->setValue(6);
 }
