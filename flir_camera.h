@@ -30,12 +30,10 @@ public:
         cam->EndAcquisition();
         emit streaming(false);
     }
-    void changeAcquisition(bool streaming) { (streaming) ? stopAquisition() : startAquisition(); }
     void OnImageEvent(ImagePtr);
 
     std::string getModelName();
     std::string getVendorName();
-    int getRealFrameRate();
     int getFixedFrameRate();
     int getExposureTime();
     int getGain();
@@ -54,7 +52,6 @@ public:
     void updateFixedFrameRate(int framerate);
     void setTrigger(QString value);
     void setTriggerMode(QString value);
-    CameraPtr getCam() const;
 
 signals:
     void exposureTimeChanged(int);

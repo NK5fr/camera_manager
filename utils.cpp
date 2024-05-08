@@ -19,50 +19,10 @@ int utils::showError(std::string text)
         .exec();
 }
 
-// Centers a Widget on a given screen
-QRect utils::reCenter(QWidget* toCenter, QScreen *screen)
-{
-    return utils::centerOnPoint(toCenter->geometry(), screen->geometry().center());
-}
-
-// Creates and returns a rectangle that is then centered on a given screen
-QRect utils::reCenter(int width, int height, QScreen *screen)
-{
-    QRect rect = QRect(0,0,width, height);
-    rect.moveCenter(screen->geometry().center());
-    return rect;
-}
-
-// Centers a widget on a given screen and then adds an offset to it
-QRect utils::reCenterOffSet(QWidget *toCenter, QScreen *screen, char direction, int offset)
-{
-    QPoint screenCenter = screen->geometry().center();
-    switch (direction) {
-    case 'b':
-        screenCenter.setY(screenCenter.y() + offset);
-        break;
-    case 'r':
-        screenCenter.setX(screenCenter.x() + offset);
-        break;
-    case 'l':
-        screenCenter.setX(screenCenter.x() - offset);
-        break;
-    default:
-        screenCenter.setY(screenCenter.y() - offset);
-        break;
-    }
-    return utils::centerOnPoint(toCenter->geometry(), screenCenter);
-}
 // Centers a widget to another widget
 QRect utils::reCenterWidget(QWidget *toCenter, QWidget *widget)
 {
     return utils::centerOnPoint(toCenter->geometry(), widget->mapToGlobal(widget->frameGeometry().center()));
-}
-
-// Centers a QRect on to another QRect
-QRect utils::center(QRect toCenter, QRect rect)
-{
-    return utils::centerOnPoint(toCenter, rect.center());
 }
 
 // Moves the center of a QRect to a given point, used to center everything

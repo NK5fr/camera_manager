@@ -127,7 +127,7 @@ void CameraWidget::takePicture(ImagePtr convertedImage, int count){
     try {
         convertedImage->Save(filename.str().c_str());
     } catch(Spinnaker::Exception exception) {
-        utils::showError("Could not save image to folder, try changing the folder!");
+        utils::showError(exception.what());
     }
 }
 

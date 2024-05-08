@@ -29,7 +29,6 @@ public:
     void initTrigger();
     void initTriggerMode();
     void updateVisibility();
-    void showFileDialog();
 private:
     Ui::SettingsWidget *ui;
     FlirCamera *cam;
