@@ -139,7 +139,7 @@ void CameraWidget::displayImage(ImagePtr convertedImage){
                  convertedImage->GetStride(),
                  QImage::Format_BGR888);
     ui->cameraRendering->setPixmap(QPixmap::fromImage(
-        image.scaled(QSize(100*this->zoom,66*this->zoom), Qt::KeepAspectRatio, Qt::SmoothTransformation)));
+        image.scaled(QSize(100*this->zoom,66*this->zoom), Qt::KeepAspectRatio)));
 }
 
 // Calculate and return the frame rate from the average recuperation time of each image
