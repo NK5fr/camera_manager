@@ -46,7 +46,7 @@ private:
     int fpsSum = 0;
     int fpsCount = 0;
     int zoom = 6;
-    string filePath = "../../images";
+    string filePath = "../../images/";
     QElapsedTimer elapsedTimer;
     bool shouldTakePicture = false;
     void showSettings();

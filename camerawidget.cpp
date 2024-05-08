@@ -122,8 +122,8 @@ void CameraWidget::getCameraImage(ImagePtr convertedImage, int count)
 void CameraWidget::takePicture(ImagePtr convertedImage, int count){
     shouldTakePicture = false;
     ostringstream filename;
-    qInfo() << utils::getTime();
     filename << this->filePath << utils::getTime() << "-" << count << ".png";
+    qInfo() << filename.str().c_str();
     try {
         convertedImage->Save(filename.str().c_str());
     } catch(Spinnaker::Exception exception) {

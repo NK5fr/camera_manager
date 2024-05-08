@@ -86,7 +86,7 @@ SettingsWidget::SettingsWidget(FlirCamera *camera, QWidget *parent)
 
     QObject::connect(ui->triggerModeInput, &QComboBox::currentTextChanged, cam, &FlirCamera::setTriggerMode);
     QObject::connect(cam, &FlirCamera::triggerModeChange, ui->triggerModeInput, &QComboBox::setCurrentText);
-    QObject::connect(ui->imageButton, &QPushButton::clicked, [this]() {
+    QObject::connect(ui->imageButton, &QPushButton::clicked, this, [this]() {
         QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "/home", QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
         qInfo() << dir;
         emit fileNameChanged(dir);
