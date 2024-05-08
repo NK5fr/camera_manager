@@ -45,7 +45,11 @@ CameraWidget::CameraWidget(FlirCamera *flircam, QWidget *parent)
     connect(controller, &FrameRateController::fixedFrameRateChanged, cam, &FlirCamera::updateFixedFrameRate);
 
     // Listen to refresh timer event
-    connect(refreshTimer, &QTimer::timeout, this, &CameraWidget::testCameraStatus);
+    connect(refreshTimer, &QTimer::timeout, this, [this](){
+        if (!cam->isConnected()) {
+            close();
+        }
+    });
 
     // Listen to the slider events
     connect(ui->zoomInput, &QSlider::valueChanged, this, [this](int value){zoom = value;});
@@ -101,18 +105,34 @@ void CameraWidget::getCameraImage(ImagePtr convertedImage, int count)
 {
     // Take a picture if asked
     if(shouldTakePicture){
-        shouldTakePicture = false;
-        ostringstream filename;
-        qInfo() << utils::getTime();
-        filename << this->filePath << utils::getTime() << "-" << count << ".png";
-        try {
-            convertedImage->Save(filename.str().c_str());
-        } catch(Spinnaker::Exception exception) {
-            utils::showError("Could not save image to folder, try changing the folder!");
-        }
+        takePicture(convertedImage, count);
     }
 
-    // Init and display image in a label
+    // Display image in a label
+    displayImage(convertedImage);
+
+    // Calculate framerate and diplay it if the value is 0 or above
+    int result = calculateFrameRate();
+    if(result >= 0){
+        ui->framerate->setText(QString::number(result));
+    }
+}
+
+// Take a picture
+void CameraWidget::takePicture(ImagePtr convertedImage, int count){
+    shouldTakePicture = false;
+    ostringstream filename;
+    qInfo() << utils::getTime();
+    filename << this->filePath << utils::getTime() << "-" << count << ".png";
+    try {
+        convertedImage->Save(filename.str().c_str());
+    } catch(Spinnaker::Exception exception) {
+        utils::showError("Could not save image to folder, try changing the folder!");
+    }
+}
+
+// Init and display image in a label
+void CameraWidget::displayImage(ImagePtr convertedImage){
     QImage image((uchar *) convertedImage->GetData(),
                  convertedImage->GetWidth(),
                  convertedImage->GetHeight(),
@@ -120,17 +140,21 @@ void CameraWidget::getCameraImage(ImagePtr convertedImage, int count)
                  QImage::Format_BGR888);
     ui->cameraRendering->setPixmap(QPixmap::fromImage(
         image.scaled(QSize(100*this->zoom,66*this->zoom), Qt::KeepAspectRatio, Qt::SmoothTransformation)));
+}
 
-    // Calculate the frame rate from the average recuperation time of each image
+// Calculate and return the frame rate from the average recuperation time of each image
+int CameraWidget::calculateFrameRate(){
+    int result = -1;
     int elapsed = elapsedTimer.elapsed(); // check the recuperation time of one image
     fpsSum += 1000 / elapsed;
     ++fpsCount;
-    if (fpsCount >= cam->getFixedFrameRate()) { // Change the frame rate text if the number of taken pictures is equal to the fixed frame rate
-        ui->framerate->setText(QString::number(fpsSum / fpsCount));
+    if (fpsCount >= cam->getFixedFrameRate()) { // Change the result if the number of taken pictures is equal to the fixed frame rate
+        result = fpsSum / fpsCount;
         fpsSum = 0;
         fpsCount = 0;
     }
     elapsedTimer.restart(); // restart to calculate the next recuperation time
+    return result;
 }
 
 // Start the camera
@@ -200,14 +224,6 @@ void CameraWidget::closeEvent(QCloseEvent *event)
     qInfo() << "close event camera widget";
     emit widgetClosed();
     this->stopExisting();
-}
-
-// Check if the camera is still connected
-void CameraWidget::testCameraStatus()
-{
-    if (!cam->isConnected()) {
-        close();
-    }
 }
 
 // Catch click event to close settings and frame rate controller windows if open
