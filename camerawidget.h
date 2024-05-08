@@ -46,7 +46,7 @@ private:
     int fpsSum = 0;
     int fpsCount = 0;
     int zoom = 6;
-    std::string filePath = "../../images";
+    string filePath = "../../images";
     QElapsedTimer elapsedTimer;
     bool shouldTakePicture = false;
     void showSettings();
@@ -56,9 +56,10 @@ private:
     void changeAcquisition(bool streaming);
     void stopExisting();
     void showFrameRateController();
-    void testCameraStatus();
     void mousePressEvent(QMouseEvent *event);
-    void changeZoom(int zoom);
+    void takePicture(ImagePtr, int);
+    void displayImage(ImagePtr convertedImage);
+    int calculateFrameRate();
 signals:
     void widgetClosed();
 };
