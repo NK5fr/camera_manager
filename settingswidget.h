@@ -33,12 +33,6 @@ public:
 private:
     Ui::SettingsWidget *ui;
     FlirCamera *cam;
-    void setMaxExpoSliderWidth();
-    void setExposureMode(Qt::CheckState state);
-    void setMinExpoSliderWidth();
-    void setMinGainSliderWidth();
-    void setMaxGainSliderWidth();
-    void setGainMode(Qt::CheckState state);
 signals:
     void fileNameChanged(QString filePath);
 };

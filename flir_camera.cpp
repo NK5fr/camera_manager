@@ -186,6 +186,11 @@ void FlirCamera::setTriggerMode(QString v){
     emit triggerModeChange(v);
 }
 
+CameraPtr FlirCamera::getCam() const
+{
+    return cam;
+}
+
 // Return the maximum frame rate value according to the camera capacity
 int FlirCamera::getMaxFps(){
     int oldValue = cam->AcquisitionFrameRate.GetValue(); // Get fixed frame rate value

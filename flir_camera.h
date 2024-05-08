@@ -55,6 +55,8 @@ public:
     void updateFixedFrameRate(int framerate);
     void setTrigger(QString value);
     void setTriggerMode(QString value);
+    CameraPtr getCam() const;
+
 signals:
     void exposureTimeChanged(int);
     void gainChanged(int);
