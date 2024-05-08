@@ -33,7 +33,6 @@ public:
     void changeAcquisition(bool streaming) { (streaming) ? stopAquisition() : startAquisition(); }
     void OnImageEvent(ImagePtr);
 
-    INodeMap &getINodeMap();
     std::string getModelName();
     std::string getVendorName();
     int getRealFrameRate();

@@ -119,14 +119,14 @@ bool FlirCamera::isGainAuto() {
 // Return camera device model name
 std::string FlirCamera::getModelName()
 {
-    CStringPtr ptrDeviceVendorName = getINodeMap().GetNode("DeviceModelName");
+    CStringPtr ptrDeviceVendorName = cam->GetTLDeviceNodeMap().GetNode("DeviceModelName");
     return ptrDeviceVendorName->ToString().c_str();
 }
 
 // Return camera vendor name
 std::string FlirCamera::getVendorName()
 {
-    CStringPtr ptrDeviceVendorName = getINodeMap().GetNode("DeviceVendorName");
+    CStringPtr ptrDeviceVendorName = cam->GetTLDeviceNodeMap().GetNode("DeviceVendorName");
     return ptrDeviceVendorName->ToString().c_str();
 }
 
@@ -158,12 +158,6 @@ string FlirCamera::getSerial()
 {
     CStringPtr ptrStringSerial = cam->GetTLDeviceNodeMap().GetNode("DeviceSerialNumber");
     return ptrStringSerial->GetValue().c_str();
-}
-
-// Return INodeMap
-INodeMap &FlirCamera::getINodeMap()
-{
-    return cam->GetTLDeviceNodeMap();
 }
 
 // Return fixed frame rate value
